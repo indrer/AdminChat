@@ -16,6 +16,10 @@ permissions:
     description: Gives access to all commands
     children:
       adminchat.use: true
+      adminchat.read: true
   adminchat.use:
     default: op
     description: Allows a user to chat within the admin channel
+  adminchat.read:
+    default: op
+    description: Allows a user to read the admin chat, but not participate
