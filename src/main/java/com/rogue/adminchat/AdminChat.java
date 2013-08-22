@@ -1,4 +1,4 @@
-package net.h31ix.adminchat;
+package com.rogue.adminchat;
 
 import java.io.File;
 import java.util.ArrayList;
