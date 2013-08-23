@@ -57,7 +57,7 @@ public class AdminListener implements Listener {
      * Sends a notification to ops/players with all of the plugin's permissions
      *
      * @since 1.2.0
-     * @versino 1.2.0
+     * @versino 1.2.1
      *
      * @param e The join event
      */

@@ -37,7 +37,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.2.0
+ * @version 1.2.1
  */
 public class AdminChat extends JavaPlugin {
 
