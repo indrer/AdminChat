@@ -1,1 +1,1 @@
-format: '&aADMIN: {0}: &c{1}'
+format: '&aADMIN: {NAME}: &c{MESSAGE}'

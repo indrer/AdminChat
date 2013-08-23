@@ -54,7 +54,7 @@ public class AdminChat extends JavaPlugin {
         } else {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
             if (!yaml.isSet("format")) {
-                yaml.set("format", "&aADMIN: {0}: &c{1}");
+                yaml.set("format", "&aADMIN: {NAME}: &c{MESSAGE}");
             }
 
             SEND = yaml.getString("format");
@@ -89,6 +89,7 @@ public class AdminChat extends JavaPlugin {
                     toggled.remove(sender.getName());
                     this.communicate((Player)sender, "Automatic admin chat disabled!");
                 } else {
+                    toggled.add(sender.getName());
                     this.communicate((Player)sender, "Automatic admin chat enabled!");
                 }
             }
