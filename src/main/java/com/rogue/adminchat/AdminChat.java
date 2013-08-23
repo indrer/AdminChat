@@ -77,7 +77,7 @@ public class AdminChat extends JavaPlugin {
             Logger.getLogger(AdminChat.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if (this.getConfig().getBoolean("general.update-check")) {
+        if (this.getConfig().getBoolean("update-check")) {
             Bukkit.getScheduler().runTaskLater(this, new UpdateRunnable(this), 10L);
         } else {
             this.getLogger().info("Update checking disabled!");
