@@ -17,6 +17,7 @@
 package com.rogue.adminchat;
 
 import com.rogue.adminchat.metrics.Metrics;
+import com.rogue.adminchat.runnable.UpdateRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,9 +59,8 @@ public class AdminChat extends JavaPlugin {
             SEND = yaml.getString("format");
         } else {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            if (!yaml.isSet("format")) {
-                yaml.set("format", "&aADMIN: {NAME}: &c{MESSAGE}");
-            }
+            if (!yaml.isSet("format")) { yaml.set("format", "&aADMIN: {NAME}: &c{MESSAGE}"); }
+            if (!yaml.isSet("update-check")) { yaml.set("update-check", true); }
 
             SEND = yaml.getString("format");
         }
@@ -75,6 +75,12 @@ public class AdminChat extends JavaPlugin {
             metrics.start();
         } catch (IOException ex) {
             Logger.getLogger(AdminChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        if (this.getConfig().getBoolean("general.update-check")) {
+            Bukkit.getScheduler().runTaskLater(this, new UpdateRunnable(this), 10L);
+        } else {
+            this.getLogger().info("Update checking disabled!");
         }
         
         listener = new AdminListener(this);

@@ -1,1 +1,2 @@
 format: '&aADMIN: {NAME}: &c{MESSAGE}'
+update-check: true
