@@ -20,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  *
@@ -35,11 +36,37 @@ public class AdminListener implements Listener {
         plugin = p;
     }
     
+    /**
+     * Makes players who have toggled adminchat send chat to the appropriate
+     * channels
+     * 
+     * @since 1.2.0
+     * @version 1.2.0
+     * 
+     * @param event AsyncPlayerchatEvent instance
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         if (plugin.getToggled().contains(event.getPlayer().getName())) {
             event.setCancelled(true);
             plugin.adminBroadcast(event.getPlayer().getName(), event.getMessage());
+        }
+    }
+    
+    /**
+     * Sends a notification to ops/players with all of the plugin's permissions
+     *
+     * @since 1.2.0
+     * @versino 1.2.0
+     *
+     * @param e The join event
+     */
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (e.getPlayer().hasPermission("adminchat.updatenotice")) {
+            if (plugin.isOutOfDate()) {
+                e.getPlayer().sendMessage("An update for playtime is available!");
+            }
         }
     }
 

@@ -17,6 +17,7 @@ permissions:
     children:
       adminchat.use: true
       adminchat.read: true
+      adminchat.updatenotice: true
   adminchat.use:
     default: op
     description: Allows a user to chat within the admin channel

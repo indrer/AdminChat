@@ -16,9 +16,13 @@
  */
 package com.rogue.adminchat;
 
+import com.rogue.adminchat.metrics.Metrics;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,6 +43,7 @@ public class AdminChat extends JavaPlugin {
     private String SEND = "&aADMIN: {NAME}: &c{MESSAGE}";
     private List<String> toggled = new ArrayList();
     private AdminListener listener;
+    private boolean isUpdate = false;
 
     @Override
     public void onLoad() {
@@ -63,6 +68,15 @@ public class AdminChat extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        
+        try {
+            Metrics metrics = new Metrics(this);
+            getLogger().info("Enabling metrics...");
+            metrics.start();
+        } catch (IOException ex) {
+            Logger.getLogger(AdminChat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         listener = new AdminListener(this);
         Bukkit.getPluginManager().registerEvents(listener, this);
     }
@@ -149,5 +163,31 @@ public class AdminChat extends JavaPlugin {
      */
     public void communicate(String player, String message) {
         Bukkit.getPlayer(player).sendMessage(ChatColor.GREEN + "[" + ChatColor.RED + "AdminChat" + ChatColor.GREEN + "] " + message);
+    }
+    
+    /**
+     * Sets the update status for the plugin
+     * 
+     * @since 1.2.0
+     * @version 1.2.0
+     * 
+     * @param status The status to set
+     * @return The newly set status
+     */
+    public boolean setUpdateStatus(boolean status) {
+        isUpdate = status;
+        return isUpdate;
+    }
+    
+    /**
+     * Whether or not the plugin is outdated
+     * 
+     * @since 1.2.0
+     * @version 1.2.0
+     * 
+     * @return True if outdated, false otherwise
+     */
+    public boolean isOutOfDate() {
+        return isUpdate;
     }
 }
