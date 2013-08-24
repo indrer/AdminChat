@@ -93,7 +93,7 @@ public class AdminChat extends JavaPlugin {
             StringBuilder msg = new StringBuilder();
             if (args.length > 0) {
                 for (String s : args) {
-                    msg.append(s);
+                    msg.append(s).append(" ");
                 }
                 String name;
                 if (sender instanceof Player) {
@@ -101,7 +101,7 @@ public class AdminChat extends JavaPlugin {
                 } else {
                     name = "CONSOLE";
                 }
-                this.adminBroadcast(name, msg.toString());
+                this.adminBroadcast(name, msg.toString().trim());
             }
         } else if (cmd.getName().equalsIgnoreCase("actoggle")) {
             if (sender instanceof Player) {
