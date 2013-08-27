@@ -26,11 +26,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
  *
  * @since 1.2.0
  * @author 1Rogue
- * @version 1.2.0
+ * @version 1.2.2
  */
 public class AdminListener implements Listener {
     
-    private AdminChat plugin;
+    private final AdminChat plugin;
     
     public AdminListener (AdminChat p) {
         plugin = p;
@@ -41,15 +41,15 @@ public class AdminListener implements Listener {
      * channels
      * 
      * @since 1.2.0
-     * @version 1.2.0
+     * @version 1.2.2
      * 
      * @param event AsyncPlayerchatEvent instance
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (plugin.getToggled().contains(event.getPlayer().getName())) {
+        if (plugin.getCommandHandler().getToggled().keySet().contains(event.getPlayer().getName())) {
             event.setCancelled(true);
-            plugin.adminBroadcast(event.getPlayer().getName(), event.getMessage());
+            plugin.adminBroadcast(plugin.getCommandHandler().getToggled().get(event.getPlayer().getName()), event.getPlayer().getName(), event.getMessage());
         }
     }
     
@@ -65,7 +65,7 @@ public class AdminListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("adminchat.updatenotice")) {
             if (plugin.isOutOfDate()) {
-                e.getPlayer().sendMessage("An update for Adminchat is available!");
+                plugin.communicate(e.getPlayer(), "An update for Adminchat is available!");
             }
         }
     }

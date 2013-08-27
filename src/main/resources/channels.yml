@@ -1,5 +1,4 @@
 channels:
-  adminchan:
+  adminchat:
     command: 'ac'
     format: '&aADMIN: {NAME}: &c{MESSAGE}'
-    permission: 'adminchat.channel.adminchan'

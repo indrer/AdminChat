@@ -28,9 +28,9 @@ import com.rogue.adminchat.AdminChat;
 /**
  * Adopted from TotalPermissions
  *
- * @since 1.1
+ * @since 1.2.0
  * @author Lord_Ralex
- * @version 1.4.0
+ * @version 1.2.1
  */
 public class UpdateRunnable implements Runnable {
 
