@@ -19,6 +19,7 @@ package com.rogue.adminchat.command;
 import com.rogue.adminchat.AdminChat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +48,7 @@ public class CommandHandler implements CommandExecutor {
             commandLabel = commandLabel.substring(0, commandLabel.length() - 7);
             System.out.println("new command label: " + commandLabel);
         }
-        plugin.getLogger().info("onCommand called! commandLabel = " + commandLabel);
+        plugin.getLogger().log(Level.INFO, "onCommand called! commandLabel = {0}", commandLabel);
         if (plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
             if (toggle) {
                 if (sender instanceof Player) {
@@ -72,7 +73,6 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         name = "CONSOLE";
                     }
-                    plugin.getLogger().info("Message to send: " + msg.toString().trim());
                     plugin.adminBroadcast(commandLabel, name, msg.toString().trim());
                 }
             }

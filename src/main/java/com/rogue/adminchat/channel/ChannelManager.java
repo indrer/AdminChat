@@ -22,14 +22,11 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -75,9 +72,6 @@ public class ChannelManager {
         for (String s : sect.getKeys(false)) {
             String format = yaml.getString("channels." + s + ".format");
             String cmd = yaml.getString("channels." + s + ".command");
-            plugin.getLogger().log(Level.INFO, "s = {0}", s);
-            plugin.getLogger().log(Level.INFO, "format = {0}", format);
-            plugin.getLogger().log(Level.INFO, "cmd = {0}", cmd);
             if (format != null && cmd != null) {
                 plugin.getLogger().log(Level.INFO, "Adding command {0}!", cmd);
                 channels.put(cmd, new Channel(s, cmd, format));
@@ -92,35 +86,16 @@ public class ChannelManager {
             Field f = SimplePluginManager.class.getDeclaredField("commandMap");
             f.setAccessible(true);
             scm = (SimpleCommandMap) f.get(Bukkit.getPluginManager());
-            if (channels.keySet().isEmpty()) {
-                plugin.getLogger().severe("fml BURN EVERYTHING");
-            }
-            for (String s : channels.keySet()) {
-
-
-                //  ATTEMPTED METHOD
-                PluginCommand pc = this.getCommand(s, plugin);
-                if (pc != null) {
-                    scm.register(".", pc);
-                    plugin.getCommand(s).setExecutor(plugin.getCommandHandler());
-                } else {
-                    plugin.getLogger().severe("pc is NULL!");
+            if (!channels.keySet().isEmpty()) {
+                for (String s : channels.keySet()) {
+                    PluginCommand pc = this.getCommand(s, plugin);
+                    PluginCommand pctoggle = this.getCommand(s + "toggle", plugin);
+                    if (pc != null && pctoggle != null) {
+                        scm.register(".", pc);
+                        scm.register(".", pctoggle);
+                        plugin.getCommand(s).setExecutor(plugin.getCommandHandler());
+                    }
                 }
-
-
-
-                //  ANOTHER ATTEMPTED METHOD
-                 /*CRegister cmd = new CRegister(s);
-                 cmd.setExecutor(plugin.getCommandHandler());
-                 CRegister togglecmd = new CRegister(s + "toggle");
-                 togglecmd.setExecutor(plugin.getCommandHandler());
-                 plugin.getLogger().log(Level.INFO, "Registering {0}!", cmd.getName());
-                 scm.register(".", cmd);
-                 scm.register(".", togglecmd);*/
-            }
-            if (plugin.getCommand("ac") != null) {
-                plugin.getLogger().info("ac is not null!");
-                plugin.getCommand("ac").setExecutor(plugin.getCommandHandler());
             }
         } catch (NoSuchFieldException ex) {
             Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,17 +117,17 @@ public class ChannelManager {
 
             command = c.newInstance(name, plugin);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
         }
 
         return command;
