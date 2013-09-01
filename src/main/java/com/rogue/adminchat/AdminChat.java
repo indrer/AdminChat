@@ -83,11 +83,11 @@ public class AdminChat extends JavaPlugin {
             this.getLogger().info("Update checking disabled!");
         }
         
-        this.getLogger().info("Enabling Channel Manager...");
-        cmanager = new ChannelManager(this);
-        
         this.getLogger().info("Enabling Command Handler...");
         chandle = new CommandHandler(this);
+        
+        this.getLogger().info("Enabling Channel Manager...");
+        cmanager = new ChannelManager(this);
         
         this.getLogger().info("Enabling Listener...");
         listener = new AdminListener(this);
