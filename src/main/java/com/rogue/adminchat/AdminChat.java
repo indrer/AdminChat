@@ -92,15 +92,15 @@ public final class AdminChat extends JavaPlugin {
 
         this.chandle.setExecs();
     }
-    
+
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
     }
-    
+
     /**
      * Reloads AdminChat
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
      */
