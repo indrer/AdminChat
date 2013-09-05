@@ -93,7 +93,6 @@ public class ChannelManager {
                     if (pc != null && pctoggle != null) {
                         scm.register(".", pc);
                         scm.register(".", pctoggle);
-                        plugin.getCommand(s).setExecutor(plugin.getCommandHandler());
                     }
                 }
             }

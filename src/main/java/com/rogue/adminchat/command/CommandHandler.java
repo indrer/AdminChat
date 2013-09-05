@@ -17,6 +17,7 @@
 package com.rogue.adminchat.command;
 
 import com.rogue.adminchat.AdminChat;
+import com.rogue.adminchat.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -45,12 +46,12 @@ public class CommandHandler implements CommandExecutor {
         boolean toggle = false;
         if (commandLabel.toLowerCase().endsWith("toggle")) {
             toggle = true;
-            commandLabel = commandLabel.substring(0, commandLabel.length() - 7);
-            System.out.println("new command label: " + commandLabel);
+            commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
         }
         plugin.getLogger().log(Level.INFO, "onCommand called! commandLabel = {0}", commandLabel);
         if (plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
             if (toggle) {
+                plugin.getLogger().log(Level.INFO, "toggle command called");
                 if (sender instanceof Player) {
                     String chan = toggled.get(sender.getName());
                     if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
@@ -62,6 +63,7 @@ public class CommandHandler implements CommandExecutor {
                     }
                 }
             } else {
+                plugin.getLogger().log(Level.INFO, "Normal command called");
                 StringBuilder msg = new StringBuilder();
                 if (args.length > 0) {
                     for (String s : args) {
@@ -90,5 +92,21 @@ public class CommandHandler implements CommandExecutor {
      */
     public Map<String, String> getToggled() {
         return toggled;
+    }
+    
+    /**
+     * Sets the command handler as the executor for channel commands
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     */
+    public void setExecs() {
+        final Map<String, Channel> channels;
+        synchronized (channels = plugin.getChannelManager().getChannels()) {
+            for (String cmd : channels.keySet()) {
+                plugin.getCommand(cmd).setExecutor(this);
+                plugin.getCommand(cmd + "toggle").setExecutor(this);
+            }
+        }
     }
 }

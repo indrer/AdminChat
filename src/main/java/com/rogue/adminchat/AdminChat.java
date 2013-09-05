@@ -92,6 +92,8 @@ public class AdminChat extends JavaPlugin {
         this.getLogger().info("Enabling Listener...");
         listener = new AdminListener(this);
         Bukkit.getPluginManager().registerEvents(listener, this);
+        
+        chandle.setExecs();
     }
 
     /**
@@ -104,11 +106,14 @@ public class AdminChat extends JavaPlugin {
      * @param message The message to send to admins
      */
     public void adminBroadcast(String channel, String name, String message) {
+        this.getLogger().log(Level.INFO, "adminBroadcast called");
         Channel chan = this.getChannelManager().getChannels().get(channel);
         String send = chan.getFormat();
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
+        this.getLogger().log(Level.INFO, "broadcasting...");
         Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName());
+        this.getLogger().log(Level.INFO, "broadcasted");
     }
     
     /**
