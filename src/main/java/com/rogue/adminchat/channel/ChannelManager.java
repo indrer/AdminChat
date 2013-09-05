@@ -85,7 +85,7 @@ public class ChannelManager {
             if (format != null && cmd != null) {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
                 this.channels.put(cmd, new Channel(s, cmd, format));
-                Permission perm = new Permission("adminchat.channel." + cmd);
+                Permission perm = new Permission("adminchat.channel." + s);
                 perm.setDefault(PermissionDefault.OP);
                 perm.addParent("adminchat.channel.*", true);
                 try {
