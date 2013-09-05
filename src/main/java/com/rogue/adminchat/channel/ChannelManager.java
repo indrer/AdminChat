@@ -82,7 +82,7 @@ public class ChannelManager {
         for (String s : sect.getKeys(false)) {
             String format = yaml.getString("channels." + s + ".format");
             String cmd = yaml.getString("channels." + s + ".command");
-            if (format != null && cmd != null) {
+            if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
                 this.channels.put(cmd, new Channel(s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + s);
