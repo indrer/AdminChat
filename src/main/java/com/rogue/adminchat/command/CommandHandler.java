@@ -20,6 +20,7 @@ import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,7 @@ public class CommandHandler implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("adminchat")) {
-            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) { 
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("adminchat.reload")) { 
                 if (sender instanceof Player) {
                     this.plugin.reload(sender.getName());
                 } else {
@@ -115,6 +116,7 @@ public class CommandHandler implements CommandExecutor {
                 this.plugin.getCommand(cmd).setExecutor(this);
                 this.plugin.getCommand(cmd + "toggle").setExecutor(this);
             }
+            this.plugin.getCommand("adminchat").setExecutor(this);
         }
     }
 }

@@ -10,7 +10,7 @@ permissions:
     default: OP
     children:
     - adminchat.channel.*
+    - adminchat.reload
 commands:
   adminchat:
     description: Adminchat's main command interface
-    permission: adminchat.admin

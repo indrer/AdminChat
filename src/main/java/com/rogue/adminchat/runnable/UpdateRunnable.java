@@ -34,42 +34,40 @@ import com.rogue.adminchat.AdminChat;
  */
 public class UpdateRunnable implements Runnable {
 
-    private static final String VERSION_URL = "https://raw.github.com/1Rogue/AdminChat/master/VERSION";
+    private final String VERSION_URL = "https://raw.github.com/1Rogue/AdminChat/master/VERSION";
     private Boolean isLatest = null;
     private String latest;
     private String version;
     private final AdminChat plugin;
 
-    public UpdateRunnable(AdminChat p) {
+    public UpdateRunnable(AdminChat plugin) {
         super();
-        plugin = p;
-        version = plugin.getDescription().getVersion();
+        this.plugin = plugin;
+        this.version = plugin.getDescription().getVersion();
     }
 
     public void run() {
-        if (version.endsWith("SNAPSHOT") || version.endsWith("DEV")) {
-            plugin.getLogger().warning("Dev build detected, update checking disabled");
-            isLatest = true;
+        if (this.version.endsWith("SNAPSHOT") || version.endsWith("DEV")) {
+            this.plugin.getLogger().warning("Dev build detected, update checking disabled");
+            this.isLatest = true;
             return;
         }
         try {
-            URL call = new URL(VERSION_URL);
+            URL call = new URL(this.VERSION_URL);
             InputStream stream = call.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            latest = reader.readLine();
+            this.latest = reader.readLine();
             reader.close();
-            if (latest.equalsIgnoreCase(version)) {
-                isLatest = true;
+            if (this.latest.equalsIgnoreCase(this.version)) {
+                this.isLatest = true;
             } else {
-                isLatest = false;
+                this.isLatest = false;
             }
-            plugin.setUpdateStatus(!isLatest);
+            this.plugin.setUpdateStatus(!isLatest);
         } catch (MalformedURLException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Error checking for update");
-            ex.printStackTrace();
+            this.plugin.getLogger().log(Level.SEVERE, "Error checking for update", ex);
         } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Error checking for update");
-            ex.printStackTrace();
+            this.plugin.getLogger().log(Level.SEVERE, "Error checking for update", ex);
         }
     }
 }

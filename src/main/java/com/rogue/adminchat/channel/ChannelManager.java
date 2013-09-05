@@ -58,10 +58,10 @@ public class ChannelManager {
     /**
      * Gets the channel configurations from the channels.yml file, or loads a
      * new one if it does not exist
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
-     * 
+     *
      * @throws IOException When file is not readable
      */
     private void setup() throws IOException {
@@ -102,7 +102,7 @@ public class ChannelManager {
     /**
      * Registers the channel commands with bukkit's command map dynamically. If
      * a command already exists, it will be prefixed with a period.
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
      */
@@ -111,14 +111,15 @@ public class ChannelManager {
         try {
             Field f = SimplePluginManager.class.getDeclaredField("commandMap");
             f.setAccessible(true);
-            scm = (SimpleCommandMap) f.get(Bukkit.getPluginManager());
-            if (!this.channels.keySet().isEmpty()) {
-                for (String s : this.channels.keySet()) {
-                    PluginCommand pc = this.getCommand(s, this.plugin);
-                    PluginCommand pctoggle = this.getCommand(s + "toggle", this.plugin);
-                    if (pc != null && pctoggle != null) {
-                        scm.register(".", pc);
-                        scm.register(".", pctoggle);
+            synchronized (scm = (SimpleCommandMap) f.get(Bukkit.getPluginManager())) {
+                if (!this.channels.keySet().isEmpty()) {
+                    for (String s : this.channels.keySet()) {
+                        PluginCommand pc = this.getCommand(s, this.plugin);
+                        PluginCommand pctoggle = this.getCommand(s + "toggle", this.plugin);
+                        if (pc != null && pctoggle != null) {
+                            scm.register(".", pc);
+                            scm.register(".", pctoggle);
+                        }
                     }
                 }
             }
@@ -135,10 +136,10 @@ public class ChannelManager {
 
     /**
      * Gets a PluginCommand object from bukkit
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
-     * 
+     *
      * @param name Command Label
      * @param plugin Plugin instance
      * @return New PluginCommand object, or null upon an exception
@@ -170,22 +171,22 @@ public class ChannelManager {
 
     /**
      * Returns a map of the current channels, with the command as their key
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
-     * 
+     *
      * @return A map of the channels
      */
     public Map<String, Channel> getChannels() {
         return this.channels;
     }
-    
+
     /**
      * Returns a Channel by a requested key. This method is thread-safe.
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
-     * 
+     *
      * @param name The channel command
      * @return The channel object, null if channel does not exist
      */
