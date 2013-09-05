@@ -47,43 +47,43 @@ public class ChannelManager {
     private final Map<String, Channel> channels = new HashMap();
     private final AdminChat plugin;
 
-    public ChannelManager(AdminChat p) {
-        plugin = p;
+    public ChannelManager(AdminChat plugin) {
+        this.plugin = plugin;
         try {
             setup();
         } catch (IOException ex) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, "Error grabbing channels!", ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Error grabbing channels!", ex);
         }
     }
 
     private void setup() throws IOException {
-        if (plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
+        if (this.plugin.getDataFolder().exists()) {
+            this.plugin.getDataFolder().mkdir();
         }
-        File chan = new File(plugin.getDataFolder() + File.separator + "channels.yml");
+        File chan = new File(this.plugin.getDataFolder() + File.separator + "channels.yml");
         if (!chan.exists()) {
-            plugin.saveResource("channels.yml", true);
+            this.plugin.saveResource("channels.yml", true);
         }
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(chan);
         ConfigurationSection sect = yaml.getConfigurationSection("channels");
         if (sect == null) {
-            plugin.getLogger().severe("No channels found, disabling!");
-            Bukkit.getPluginManager().disablePlugin(plugin);
+            this.plugin.getLogger().severe("No channels found, disabling!");
+            Bukkit.getPluginManager().disablePlugin(this.plugin);
             return;
         }
         for (String s : sect.getKeys(false)) {
             String format = yaml.getString("channels." + s + ".format");
             String cmd = yaml.getString("channels." + s + ".command");
             if (format != null && cmd != null) {
-                plugin.getLogger().log(Level.INFO, "Adding command {0}!", cmd);
-                channels.put(cmd, new Channel(s, cmd, format));
+                this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
+                this.channels.put(cmd, new Channel(s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + cmd);
                 perm.setDefault(PermissionDefault.OP);
                 try {
-                    plugin.getLogger().config("Registering " + perm.getName());
+                    this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
                 } catch (IllegalArgumentException e) {
-                    plugin.getLogger().warning("The permission " + perm.getName() + " already existed!");
+                    this.plugin.getLogger().log(Level.WARNING, "The permission {0} already existed!", perm.getName());
                 }
             }
         }
@@ -96,10 +96,10 @@ public class ChannelManager {
             Field f = SimplePluginManager.class.getDeclaredField("commandMap");
             f.setAccessible(true);
             scm = (SimpleCommandMap) f.get(Bukkit.getPluginManager());
-            if (!channels.keySet().isEmpty()) {
-                for (String s : channels.keySet()) {
-                    PluginCommand pc = this.getCommand(s, plugin);
-                    PluginCommand pctoggle = this.getCommand(s + "toggle", plugin);
+            if (!this.channels.keySet().isEmpty()) {
+                for (String s : this.channels.keySet()) {
+                    PluginCommand pc = this.getCommand(s, this.plugin);
+                    PluginCommand pctoggle = this.getCommand(s + "toggle", this.plugin);
                     if (pc != null && pctoggle != null) {
                         scm.register(".", pc);
                         scm.register(".", pctoggle);
@@ -107,13 +107,13 @@ public class ChannelManager {
                 }
             }
         } catch (NoSuchFieldException ex) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, null, ex);
         }
     }
 
@@ -126,17 +126,17 @@ public class ChannelManager {
 
             command = c.newInstance(name, plugin);
         } catch (SecurityException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         } catch (IllegalArgumentException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         } catch (IllegalAccessException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         } catch (InstantiationException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         } catch (InvocationTargetException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         } catch (NoSuchMethodException e) {
-            Logger.getLogger(ChannelManager.class.getName()).log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, null, e);
         }
 
         return command;

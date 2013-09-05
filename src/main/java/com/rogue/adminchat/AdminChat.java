@@ -78,16 +78,16 @@ public class AdminChat extends JavaPlugin {
         }
         
         this.getLogger().info("Enabling Command Handler...");
-        chandle = new CommandHandler(this);
+        this.chandle = new CommandHandler(this);
         
         this.getLogger().info("Enabling Channel Manager...");
-        cmanager = new ChannelManager(this);
+        this.cmanager = new ChannelManager(this);
         
         this.getLogger().info("Enabling Listener...");
-        listener = new AdminListener(this);
-        Bukkit.getPluginManager().registerEvents(listener, this);
+        this.listener = new AdminListener(this);
+        Bukkit.getPluginManager().registerEvents(this.listener, this);
         
-        chandle.setExecs();
+        this.chandle.setExecs();
     }
 
     /**
@@ -96,8 +96,9 @@ public class AdminChat extends JavaPlugin {
      * @since 1.2.0
      * @version 1.3.0
      *
-     * @param name The name to replace in the string
-     * @param message The message to send to admins
+     * @param channel The channel to send to, based on command
+     * @param name The user sending the message
+     * @param message The message to send to others in the channel
      */
     public void adminBroadcast(String channel, String name, String message) {
         Channel chan = this.getChannelManager().getChannels().get(channel);
@@ -113,7 +114,7 @@ public class AdminChat extends JavaPlugin {
      * @since 1.2.0
      * @version 1.3.0
      * 
-     * @param p The player to send to
+     * @param player The player to send to
      * @param message The message to send
      */
     public void communicate(Player player, String message) {
@@ -126,11 +127,11 @@ public class AdminChat extends JavaPlugin {
      * @since 1.2.0
      * @version 1.3.0
      * 
-     * @param p The player to send to
+     * @param player The player to send to
      * @param message The message to send
      */
     public void communicate(String player, String message) {
-        Bukkit.getPlayer(player).sendMessage(ChatColor.translateAlternateColorCodes('&', "&a[&cAdminChat&a] " + message));
+        this.communicate(Bukkit.getPlayer(player), message);
     }
     
     /**
@@ -143,8 +144,8 @@ public class AdminChat extends JavaPlugin {
      * @return The newly set status
      */
     public boolean setUpdateStatus(boolean status) {
-        isUpdate = status;
-        return isUpdate;
+        this.isUpdate = status;
+        return this.isUpdate;
     }
     
     /**
@@ -156,7 +157,7 @@ public class AdminChat extends JavaPlugin {
      * @return True if outdated, false otherwise
      */
     public boolean isOutOfDate() {
-        return isUpdate;
+        return this.isUpdate;
     }
     
     /**
@@ -168,7 +169,7 @@ public class AdminChat extends JavaPlugin {
      * @return Channel Manager class for AdminChat
      */
     public ChannelManager getChannelManager() {
-        return cmanager;
+        return this.cmanager;
     }
     
     /**
@@ -180,6 +181,6 @@ public class AdminChat extends JavaPlugin {
      * @return Command Handler class for AdminChat
      */
     public CommandHandler getCommandHandler() {
-        return chandle;
+        return this.chandle;
     }
 }

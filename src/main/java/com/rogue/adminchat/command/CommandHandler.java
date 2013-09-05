@@ -20,7 +20,6 @@ import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,16 +47,16 @@ public class CommandHandler implements CommandExecutor {
             toggle = true;
             commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
         }
-        if (plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
+        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + this.plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
             if (toggle) {
                 if (sender instanceof Player) {
                     String chan = toggled.get(sender.getName());
                     if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
-                        toggled.remove(sender.getName());
-                        plugin.communicate((Player) sender, "Automatic chat disabled!");
+                        this.toggled.remove(sender.getName());
+                        this.plugin.communicate((Player) sender, "Automatic chat disabled!");
                     } else {
-                        toggled.put(sender.getName(), commandLabel);
-                        plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
+                        this.toggled.put(sender.getName(), commandLabel);
+                        this.plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
                     }
                 }
             } else {
@@ -72,13 +71,13 @@ public class CommandHandler implements CommandExecutor {
                     } else {
                         name = "CONSOLE";
                     }
-                    plugin.adminBroadcast(commandLabel, name, msg.toString().trim());
+                    this.plugin.adminBroadcast(commandLabel, name, msg.toString().trim());
                 }
             }
         }
         return false;
     }
-    
+
     /**
      * Returns a list of players that are toggled for admin chat
      *
@@ -88,12 +87,12 @@ public class CommandHandler implements CommandExecutor {
      * @return List of toggled players
      */
     public Map<String, String> getToggled() {
-        return toggled;
+        return this.toggled;
     }
-    
+
     /**
      * Sets the command handler as the executor for channel commands
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
      */
@@ -101,8 +100,8 @@ public class CommandHandler implements CommandExecutor {
         final Map<String, Channel> channels;
         synchronized (channels = plugin.getChannelManager().getChannels()) {
             for (String cmd : channels.keySet()) {
-                plugin.getCommand(cmd).setExecutor(this);
-                plugin.getCommand(cmd + "toggle").setExecutor(this);
+                this.plugin.getCommand(cmd).setExecutor(this);
+                this.plugin.getCommand(cmd + "toggle").setExecutor(this);
             }
         }
     }
