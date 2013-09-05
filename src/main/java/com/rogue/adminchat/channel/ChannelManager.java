@@ -31,6 +31,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
@@ -75,6 +77,14 @@ public class ChannelManager {
             if (format != null && cmd != null) {
                 plugin.getLogger().log(Level.INFO, "Adding command {0}!", cmd);
                 channels.put(cmd, new Channel(s, cmd, format));
+                Permission perm = new Permission("adminchat.channel." + cmd);
+                perm.setDefault(PermissionDefault.OP);
+                try {
+                    plugin.getLogger().config("Registering " + perm.getName());
+                    Bukkit.getPluginManager().addPermission(perm);
+                } catch (IllegalArgumentException e) {
+                    plugin.getLogger().warning("The permission " + perm.getName() + " already existed!");
+                }
             }
         }
         register();
