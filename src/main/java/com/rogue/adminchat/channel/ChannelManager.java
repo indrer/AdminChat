@@ -92,7 +92,7 @@ public class ChannelManager {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
                 } catch (IllegalArgumentException e) {
-                    this.plugin.getLogger().log(Level.WARNING, "The permission {0} already existed!", perm.getName());
+                    this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }
             }
         }
@@ -124,13 +124,13 @@ public class ChannelManager {
                 }
             }
         } catch (NoSuchFieldException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, "commandMap field does not exist in SimplePluginManager!", ex);
         } catch (SecurityException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, "SecurityException accessing commandMap in SimplePluginManager!", ex);
         } catch (IllegalArgumentException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, "Bad arguments passed to register method in SimplePluginManager!", ex);
         } catch (IllegalAccessException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, null, ex);
+            this.plugin.getLogger().log(Level.SEVERE, "IllegalAccessException in SimplePluginManager!", ex);
         }
     }
 
