@@ -1,5 +1,5 @@
 main: com.rogue.adminchat.AdminChat
-name: AdminChat
+name: Admin-Chat
 prefix: AdminChat
 description: Allows simple communication between admins
 version: ${project.version}
