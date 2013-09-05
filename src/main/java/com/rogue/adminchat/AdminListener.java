@@ -26,7 +26,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
  *
  * @since 1.2.0
  * @author 1Rogue
- * @version 1.2.2
+ * @version 1.3.0
  */
 public class AdminListener implements Listener {
     
@@ -41,7 +41,7 @@ public class AdminListener implements Listener {
      * channels
      * 
      * @since 1.2.0
-     * @version 1.2.2
+     * @version 1.3.0
      * 
      * @param event AsyncPlayerchatEvent instance
      */

@@ -36,11 +36,10 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.2.2
+ * @version 1.3.0
  */
 public class AdminChat extends JavaPlugin {
-
-    private String SEND = "&aADMIN: {NAME}: &c{MESSAGE}";
+    
     private AdminListener listener;
     private ChannelManager cmanager;
     private CommandHandler chandle;
@@ -55,14 +54,9 @@ public class AdminChat extends JavaPlugin {
         if (!file.exists()) {
             this.saveDefaultConfig();
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-
-            SEND = yaml.getString("format");
         } else {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            if (!yaml.isSet("format")) { yaml.set("format", "&aADMIN: {NAME}: &c{MESSAGE}"); }
             if (!yaml.isSet("update-check")) { yaml.set("update-check", true); }
-
-            SEND = yaml.getString("format");
         }
     }
 
@@ -100,27 +94,24 @@ public class AdminChat extends JavaPlugin {
      * Parses the format string and sends it to players
      *
      * @since 1.2.0
-     * @version 1.2.2
+     * @version 1.3.0
      *
      * @param name The name to replace in the string
      * @param message The message to send to admins
      */
     public void adminBroadcast(String channel, String name, String message) {
-        this.getLogger().log(Level.INFO, "adminBroadcast called");
         Channel chan = this.getChannelManager().getChannels().get(channel);
         String send = chan.getFormat();
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
-        this.getLogger().log(Level.INFO, "broadcasting...");
         Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName());
-        this.getLogger().log(Level.INFO, "broadcasted");
     }
     
     /**
      * Sends a message to a player through AdminChat
      * 
      * @since 1.2.0
-     * @version 1.2.2
+     * @version 1.3.0
      * 
      * @param p The player to send to
      * @param message The message to send
@@ -133,7 +124,7 @@ public class AdminChat extends JavaPlugin {
      * Sends a message to a player through AdminChat
      * 
      * @since 1.2.0
-     * @version 1.2.2
+     * @version 1.3.0
      * 
      * @param p The player to send to
      * @param message The message to send
@@ -171,8 +162,8 @@ public class AdminChat extends JavaPlugin {
     /**
      * Returns AdminChat's channel manager
      * 
-     * @since 1.2.2
-     * @version 1.2.2
+     * @since 1.3.0
+     * @version 1.3.0
      * 
      * @return Channel Manager class for AdminChat
      */
@@ -183,8 +174,8 @@ public class AdminChat extends JavaPlugin {
     /**
      * Returns AdminChat's Command Handler
      * 
-     * @version 1.2.2
-     * @since 1.2.2
+     * @version 1.3.0
+     * @since 1.3.0
      * 
      * @return Command Handler class for AdminChat
      */

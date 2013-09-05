@@ -18,9 +18,9 @@ package com.rogue.adminchat.channel;
 
 /**
  *
- * @since 1.2.2
+ * @since 1.3.0
  * @author 1Rogue
- * @version 1.2.2
+ * @version 1.3.0
  */
 public class Channel {
     

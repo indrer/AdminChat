@@ -28,9 +28,9 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @since 1.2.2
+ * @since 1.3.0
  * @author 1Rogue
- * @version 1.2.2
+ * @version 1.3.0
  */
 public class CommandHandler implements CommandExecutor {
 
@@ -48,10 +48,8 @@ public class CommandHandler implements CommandExecutor {
             toggle = true;
             commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
         }
-        plugin.getLogger().log(Level.INFO, "onCommand called! commandLabel = {0}", commandLabel);
         if (plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
             if (toggle) {
-                plugin.getLogger().log(Level.INFO, "toggle command called");
                 if (sender instanceof Player) {
                     String chan = toggled.get(sender.getName());
                     if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
@@ -59,11 +57,10 @@ public class CommandHandler implements CommandExecutor {
                         plugin.communicate((Player) sender, "Automatic chat disabled!");
                     } else {
                         toggled.put(sender.getName(), commandLabel);
-                        plugin.communicate((Player) sender, "Now chatting in channel: " + commandLabel + "!");
+                        plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
                     }
                 }
             } else {
-                plugin.getLogger().log(Level.INFO, "Normal command called");
                 StringBuilder msg = new StringBuilder();
                 if (args.length > 0) {
                     for (String s : args) {
@@ -86,7 +83,7 @@ public class CommandHandler implements CommandExecutor {
      * Returns a list of players that are toggled for admin chat
      *
      * @since 1.2.0
-     * @version 1.2.2
+     * @version 1.3.0
      *
      * @return List of toggled players
      */
