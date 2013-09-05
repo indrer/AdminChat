@@ -55,6 +55,15 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Gets the channel configurations from the channels.yml file, or loads a
+     * new one if it does not exist
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @throws IOException When file is not readable
+     */
     private void setup() throws IOException {
         if (this.plugin.getDataFolder().exists()) {
             this.plugin.getDataFolder().mkdir();
@@ -89,6 +98,13 @@ public class ChannelManager {
         register();
     }
 
+    /**
+     * Registers the channel commands with bukkit's command map dynamically. If
+     * a command already exists, it will be prefixed with a period.
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     */
     private void register() {
         SimpleCommandMap scm;
         try {
@@ -116,6 +132,16 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Gets a PluginCommand object from bukkit
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @param name Command Label
+     * @param plugin Plugin instance
+     * @return New PluginCommand object, or null upon an exception
+     */
     private PluginCommand getCommand(String name, Plugin plugin) {
         PluginCommand command = null;
 
@@ -141,10 +167,27 @@ public class ChannelManager {
         return command;
     }
 
+    /**
+     * Returns a map of the current channels, with the command as their key
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @return A map of the channels
+     */
     public Map<String, Channel> getChannels() {
         return this.channels;
     }
     
+    /**
+     * Returns a Channel by a requested key. This method is thread-safe.
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @param name The channel command
+     * @return The channel object, null if channel does not exist
+     */
     public Channel getChannel(String name) {
         final Map<String, Channel> chans;
         synchronized (chans = this.channels) {

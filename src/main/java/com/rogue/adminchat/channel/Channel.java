@@ -34,14 +34,38 @@ public class Channel {
         format = cmdformat;
     }
     
+    /**
+     * Returns the channel's name, as it is in the configuration
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @return The channel's name
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * Returns the command used for the channel
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @return The channel command
+     */
     public String getCommand() {
         return command;
     }
     
+    /**
+     * Returns the string format for the channel
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     * 
+     * @return The channel format
+     */
     public String getFormat() {
         return format;
     }
