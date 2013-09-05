@@ -87,6 +87,7 @@ public class ChannelManager {
                 this.channels.put(cmd, new Channel(s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + cmd);
                 perm.setDefault(PermissionDefault.OP);
+                perm.addParent("adminchat.channel.*", true);
                 try {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);

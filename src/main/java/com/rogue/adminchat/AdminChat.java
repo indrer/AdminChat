@@ -38,7 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author 1Rogue
  * @version 1.3.0
  */
-public class AdminChat extends JavaPlugin {
+public final class AdminChat extends JavaPlugin {
 
     private AdminListener listener;
     private ChannelManager cmanager;
@@ -90,6 +90,30 @@ public class AdminChat extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(this.listener, this);
 
         this.chandle.setExecs();
+    }
+    
+    /**
+     * Reloads AdminChat
+     * 
+     * @since 1.3.0
+     * @version 1.3.0
+     */
+    public void reload(String... names) {
+        this.onDisable();
+        try {
+            Thread.sleep(250L);
+        } catch (InterruptedException ex) {
+            this.getLogger().log(Level.SEVERE, null, ex);
+        }
+        listener = null;
+        chandle = null;
+        cmanager = null;
+        isUpdate = false;
+        this.onLoad();
+        this.onEnable();
+        for (String s : names) {
+            this.communicate(s, "Reloaded!");
+        }
     }
 
     /**

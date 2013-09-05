@@ -42,6 +42,16 @@ public class CommandHandler implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        if (commandLabel.equalsIgnoreCase("adminchat")) {
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) { 
+                if (sender instanceof Player) {
+                    this.plugin.reload(sender.getName());
+                } else {
+                    this.plugin.reload();
+                }
+                return false;
+            }
+        }
         boolean toggle = false;
         if (commandLabel.toLowerCase().endsWith("toggle")) {
             toggle = true;
