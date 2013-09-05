@@ -16,6 +16,7 @@
  */
 package com.rogue.adminchat;
 
+import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,30 +30,35 @@ import org.bukkit.event.player.PlayerJoinEvent;
  * @version 1.3.0
  */
 public class AdminListener implements Listener {
-    
+
     private final AdminChat plugin;
-    
-    public AdminListener (AdminChat p) {
-        plugin = p;
+
+    public AdminListener(AdminChat plugin) {
+        this.plugin = plugin;
     }
-    
+
     /**
      * Makes players who have toggled adminchat send chat to the appropriate
      * channels
-     * 
+     *
      * @since 1.2.0
      * @version 1.3.0
-     * 
-     * @param event AsyncPlayerchatEvent instance
+     *
+     * @param event AsyncPlayerChatEvent instance
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (plugin.getCommandHandler().getToggled().keySet().contains(event.getPlayer().getName())) {
-            event.setCancelled(true);
-            plugin.adminBroadcast(plugin.getCommandHandler().getToggled().get(event.getPlayer().getName()), event.getPlayer().getName(), event.getMessage());
+        final Map<String, String> toggled;
+        final String name = event.getPlayer().getName();
+        synchronized (toggled = this.plugin.getCommandHandler().getToggled()) {
+            String chan = toggled.get(name);
+            if (chan != null) {
+                event.setCancelled(true);
+                plugin.adminBroadcast(toggled.get(name), name, event.getMessage());
+            }
         }
     }
-    
+
     /**
      * Sends a notification to ops/players with all of the plugin's permissions
      *
@@ -69,5 +75,4 @@ public class AdminListener implements Listener {
             }
         }
     }
-
 }

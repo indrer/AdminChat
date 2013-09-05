@@ -18,8 +18,8 @@ package com.rogue.adminchat.command;
 
 import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,10 +34,10 @@ import org.bukkit.entity.Player;
 public class CommandHandler implements CommandExecutor {
 
     private final AdminChat plugin;
-    private Map<String, String> toggled = new HashMap();
+    private final Map<String, String> toggled = new ConcurrentHashMap();
 
-    public CommandHandler(AdminChat p) {
-        plugin = p;
+    public CommandHandler(AdminChat plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -50,13 +50,15 @@ public class CommandHandler implements CommandExecutor {
         if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + this.plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
             if (toggle) {
                 if (sender instanceof Player) {
-                    String chan = toggled.get(sender.getName());
-                    if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
-                        this.toggled.remove(sender.getName());
-                        this.plugin.communicate((Player) sender, "Automatic chat disabled!");
-                    } else {
-                        this.toggled.put(sender.getName(), commandLabel);
-                        this.plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
+                    synchronized (this.toggled) {
+                        String chan = this.toggled.get(sender.getName());
+                        if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
+                            this.toggled.remove(sender.getName());
+                            this.plugin.communicate((Player) sender, "Automatic chat disabled!");
+                        } else {
+                            this.toggled.put(sender.getName(), commandLabel);
+                            this.plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
+                        }
                     }
                 }
             } else {

@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
@@ -44,7 +43,7 @@ import org.bukkit.plugin.SimplePluginManager;
  */
 public class ChannelManager {
 
-    private final Map<String, Channel> channels = new HashMap();
+    private final Map<String, Channel> channels = new ConcurrentHashMap();
     private final AdminChat plugin;
 
     public ChannelManager(AdminChat plugin) {
@@ -143,6 +142,13 @@ public class ChannelManager {
     }
 
     public Map<String, Channel> getChannels() {
-        return channels;
+        return this.channels;
+    }
+    
+    public Channel getChannel(String name) {
+        final Map<String, Channel> chans;
+        synchronized (chans = this.channels) {
+            return chans.get(name);
+        }
     }
 }

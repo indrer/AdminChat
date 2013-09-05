@@ -39,7 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @version 1.3.0
  */
 public class AdminChat extends JavaPlugin {
-    
+
     private AdminListener listener;
     private ChannelManager cmanager;
     private CommandHandler chandle;
@@ -56,13 +56,15 @@ public class AdminChat extends JavaPlugin {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         } else {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            if (!yaml.isSet("update-check")) { yaml.set("update-check", true); }
+            if (!yaml.isSet("update-check")) {
+                yaml.set("update-check", true);
+            }
         }
     }
 
     @Override
     public void onEnable() {
-        
+
         try {
             Metrics metrics = new Metrics(this);
             getLogger().info("Enabling metrics...");
@@ -70,23 +72,23 @@ public class AdminChat extends JavaPlugin {
         } catch (IOException ex) {
             Logger.getLogger(AdminChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         if (this.getConfig().getBoolean("update-check")) {
             Bukkit.getScheduler().runTaskLater(this, new UpdateRunnable(this), 10L);
         } else {
             this.getLogger().info("Update checking disabled!");
         }
-        
+
         this.getLogger().info("Enabling Command Handler...");
         this.chandle = new CommandHandler(this);
-        
+
         this.getLogger().info("Enabling Channel Manager...");
         this.cmanager = new ChannelManager(this);
-        
+
         this.getLogger().info("Enabling Listener...");
         this.listener = new AdminListener(this);
         Bukkit.getPluginManager().registerEvents(this.listener, this);
-        
+
         this.chandle.setExecs();
     }
 
@@ -101,45 +103,47 @@ public class AdminChat extends JavaPlugin {
      * @param message The message to send to others in the channel
      */
     public void adminBroadcast(String channel, String name, String message) {
-        Channel chan = this.getChannelManager().getChannels().get(channel);
+        Channel chan = this.getChannelManager().getChannel(channel);
         String send = chan.getFormat();
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
         Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName());
     }
-    
+
     /**
      * Sends a message to a player through AdminChat
-     * 
+     *
      * @since 1.2.0
      * @version 1.3.0
-     * 
+     *
      * @param player The player to send to
      * @param message The message to send
      */
     public void communicate(Player player, String message) {
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a[&cAdminChat&a] " + message));
+        if (player != null) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a[&cAdminChat&a] " + message));
+        }
     }
-    
+
     /**
      * Sends a message to a player through AdminChat
-     * 
+     *
      * @since 1.2.0
      * @version 1.3.0
-     * 
+     *
      * @param player The player to send to
      * @param message The message to send
      */
     public void communicate(String player, String message) {
         this.communicate(Bukkit.getPlayer(player), message);
     }
-    
+
     /**
      * Sets the update status for the plugin
-     * 
+     *
      * @since 1.2.0
      * @version 1.2.0
-     * 
+     *
      * @param status The status to set
      * @return The newly set status
      */
@@ -147,37 +151,37 @@ public class AdminChat extends JavaPlugin {
         this.isUpdate = status;
         return this.isUpdate;
     }
-    
+
     /**
      * Whether or not the plugin is outdated
-     * 
+     *
      * @since 1.2.0
      * @version 1.2.0
-     * 
+     *
      * @return True if outdated, false otherwise
      */
     public boolean isOutOfDate() {
         return this.isUpdate;
     }
-    
+
     /**
      * Returns AdminChat's channel manager
-     * 
+     *
      * @since 1.3.0
      * @version 1.3.0
-     * 
+     *
      * @return Channel Manager class for AdminChat
      */
     public ChannelManager getChannelManager() {
         return this.cmanager;
     }
-    
+
     /**
      * Returns AdminChat's Command Handler
-     * 
+     *
      * @version 1.3.0
      * @since 1.3.0
-     * 
+     *
      * @return Command Handler class for AdminChat
      */
     public CommandHandler getCommandHandler() {
