@@ -137,7 +137,7 @@ public final class AdminChat extends JavaPlugin {
         String send = chan.getFormat();
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
-        Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName());
+        Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
     }
 
     /**
