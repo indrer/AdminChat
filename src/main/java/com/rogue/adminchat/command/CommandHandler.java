@@ -57,7 +57,7 @@ public class CommandHandler implements CommandExecutor {
             toggle = true;
             commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
         }
-        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + this.plugin.getChannelManager().getChannels().get(commandLabel).getName())) {
+        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + this.plugin.getChannelManager().getChannels().get(commandLabel).getName() + ".send")) {
             if (toggle) {
                 if (sender instanceof Player) {
                     synchronized (this.toggled) {

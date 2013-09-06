@@ -86,11 +86,17 @@ public class ChannelManager {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
                 this.channels.put(cmd, new Channel(s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + s);
+                Permission read = new Permission("adminchat.channel." + s + ".read");
+                Permission send = new Permission("adminchat.channel." + s + ".send");
                 perm.setDefault(PermissionDefault.OP);
                 perm.addParent("adminchat.channel.*", true);
+                read.addParent("adminchat.channel." + s, true);
+                send.addParent("adminchat.channel." + s, true);
                 try {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
+                    Bukkit.getPluginManager().addPermission(read);
+                    Bukkit.getPluginManager().addPermission(send);
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }
