@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
  *
  * @since 1.3.0
  * @author 1Rogue
- * @version 1.3.0
+ * @version 1.3.1
  */
 public class CommandHandler implements CommandExecutor {
 
@@ -57,7 +57,10 @@ public class CommandHandler implements CommandExecutor {
             toggle = true;
             commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
         }
-        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel) && sender.hasPermission("adminchat.channel." + this.plugin.getChannelManager().getChannels().get(commandLabel).getName() + ".send")) {
+        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel)
+                && sender.hasPermission("adminchat.channel."
+                + this.plugin.getChannelManager().getChannels().get(commandLabel).getName()
+                + ".send")) {
             if (toggle) {
                 if (sender instanceof Player) {
                     synchronized (this.toggled) {

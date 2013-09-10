@@ -39,7 +39,7 @@ import org.bukkit.plugin.SimplePluginManager;
  *
  * @since 1.3.0
  * @author 1Rogue
- * @version 1.3.0
+ * @version 1.3.1
  */
 public class ChannelManager {
 
@@ -57,10 +57,10 @@ public class ChannelManager {
 
     /**
      * Gets the channel configurations from the channels.yml file, or loads a
-     * new one if it does not exist
+     * new one if it does not exist. Also registers appropriate permissions
      *
      * @since 1.3.0
-     * @version 1.3.0
+     * @version 1.3.1
      *
      * @throws IOException When file is not readable
      */

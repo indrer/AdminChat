@@ -37,7 +37,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.3.0
+ * @version 1.3.1
  */
 public final class AdminChat extends JavaPlugin {
 
@@ -126,7 +126,7 @@ public final class AdminChat extends JavaPlugin {
      * Parses the format string and sends it to players
      *
      * @since 1.2.0
-     * @version 1.3.0
+     * @version 1.3.1
      *
      * @param channel The channel to send to, based on command
      * @param name The user sending the message
