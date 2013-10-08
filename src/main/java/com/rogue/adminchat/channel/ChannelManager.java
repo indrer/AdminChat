@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -207,5 +208,23 @@ public class ChannelManager {
         synchronized (chans = this.channels) {
             return chans.get(name);
         }
+    }
+    
+    /**
+     * Parses the format string and sends it to players
+     *
+     * @since 1.2.0
+     * @version 1.3.1
+     *
+     * @param channel The channel to send to, based on command
+     * @param name The user sending the message
+     * @param message The message to send to others in the channel
+     */
+    public void sendMessage(String channel, String name, String message) {
+        Channel chan = this.getChannel(channel);
+        String send = chan.getFormat();
+        send = send.replace("{NAME}", name);
+        send = send.replace("{MESSAGE}", message);
+        Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
     }
 }

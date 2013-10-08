@@ -18,6 +18,10 @@ package com.rogue.adminchat.command;
 
 import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
+import com.rogue.adminchat.channel.ChannelManager;
+import static com.rogue.adminchat.command.CommandType.MUTE;
+import static com.rogue.adminchat.command.CommandType.NORMAL;
+import static com.rogue.adminchat.command.CommandType.TOGGLE;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.command.Command;
@@ -51,10 +55,28 @@ public class CommandHandler implements CommandExecutor {
                 }
                 return false;
             } else if (args.length == 2 && args[0].equalsIgnoreCase("muteall") && sender.hasPermission("adminchat.muteall")) {
-                
             }
         }
-        
+
+        /* begin rewrite */
+        ChannelManager manager = this.plugin.getChannelManager();
+        final Map<String, Channel> channels;
+        synchronized (channels = manager.getChannels()) {
+            ACCommand command = this.getCommand(commandLabel);
+            String chanName = manager.getChannel(command.getCommand()).getName();
+            switch (command.getType()) {
+                case NORMAL:
+                    
+                    break;
+                case TOGGLE:
+                    break;
+                case MUTE:
+                    break;
+            }
+        }
+
+        /* end rewrite */
+
         // This needs to be rewritten using getCommand(command)
         boolean toggle = false;
         if (commandLabel.toLowerCase().endsWith("toggle")) {
@@ -125,7 +147,7 @@ public class CommandHandler implements CommandExecutor {
             this.plugin.getCommand("adminchat").setExecutor(this);
         }
     }
-    
+
     private ACCommand getCommand(String cmd) {
         return null;
     }

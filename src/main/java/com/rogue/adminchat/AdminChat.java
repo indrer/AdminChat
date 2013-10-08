@@ -123,24 +123,6 @@ public final class AdminChat extends JavaPlugin {
     }
 
     /**
-     * Parses the format string and sends it to players
-     *
-     * @since 1.2.0
-     * @version 1.3.1
-     *
-     * @param channel The channel to send to, based on command
-     * @param name The user sending the message
-     * @param message The message to send to others in the channel
-     */
-    public void adminBroadcast(String channel, String name, String message) {
-        Channel chan = this.getChannelManager().getChannel(channel);
-        String send = chan.getFormat();
-        send = send.replace("{NAME}", name);
-        send = send.replace("{MESSAGE}", message);
-        Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
-    }
-
-    /**
      * Sends a message to a player through AdminChat
      *
      * @since 1.2.0

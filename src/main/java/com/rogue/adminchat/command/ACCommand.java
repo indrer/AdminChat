@@ -18,9 +18,9 @@ package com.rogue.adminchat.command;
 
 /**
  *
- * @since
+ * @since 1.3.2
  * @author 1Rogue
- * @version
+ * @version 1.3.2
  */
 public class ACCommand {
     

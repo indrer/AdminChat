@@ -17,9 +17,9 @@
 package com.rogue.adminchat.command;
 
 /**
- * @version 1.3.2
- * @author 1Rogue
  * @since 1.3.2
+ * @author 1Rogue
+ * @version 1.3.2
  */
 public enum CommandType {
     
