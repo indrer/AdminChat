@@ -104,7 +104,14 @@ public class CommandHandler implements CommandExecutor {
         final Map<String, Channel> channels;
         synchronized (channels = manager.getChannels()) {
             ACCommand command = this.getCommand(commandLabel);
-            String chanName = manager.getChannel(command.getCommand()).getName();
+            String chanName;
+            try {
+                chanName = manager.getChannel(command.getCommand()).getName();
+            } catch (ChannelNotFoundException ex) {
+                this.plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                this.plugin.communicate(sender.getName(), ex.getMessage());
+                return false;
+            }
             Player target;
             final String channel = command.getCommand();
             switch (command.getType()) {
@@ -132,7 +139,7 @@ public class CommandHandler implements CommandExecutor {
                                 this.plugin.communicate((Player) sender, "Automatic chat disabled!");
                             } else {
                                 this.toggled.put(sender.getName(), commandLabel);
-                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + manager.getChannel(chan).getName() + "'!");
+                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + chanName + "'!");
                             }
                         }
                     }
@@ -219,6 +226,12 @@ public class CommandHandler implements CommandExecutor {
         }
     }
 
+    /**
+     * Returns AdminChat's custom command class for a provided command name
+     * 
+     * @param cmd The command to try against
+     * @return The {@link ACCommand} version of the command
+     */
     private ACCommand getCommand(String cmd) {
         return null;
     }

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -209,10 +210,12 @@ public class ChannelManager {
      * @param name The channel command
      * @return The channel object, null if channel does not exist
      */
-    public Channel getChannel(String name) {
-        final Map<String, Channel> chans;
-        synchronized (chans = this.channels) {
-            return chans.get(name);
+    public synchronized Channel getChannel(String name) throws ChannelNotFoundException {
+        Channel chan = this.channels.get(name);
+        if (chan != null) {
+            return chan;
+        } else {
+            throw new ChannelNotFoundException("Unknown Channel: &c" + name);
         }
     }
 
@@ -227,14 +230,19 @@ public class ChannelManager {
      * @param message The message to send to others in the channel
      */
     public void sendMessage(String channel, String name, String message) {
-        Channel chan = this.getChannel(channel);
-        String send = chan.getFormat();
-        send = send.replace("{NAME}", name);
-        send = send.replace("{MESSAGE}", message);
         if (this.isMuted(name, channel)) {
             this.plugin.communicate(name, "You are muted this channel!");
         } else {
-            Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");   
+            try {
+                Channel chan = this.getChannel(channel);
+                String send = chan.getFormat();
+                send = send.replace("{NAME}", name);
+                send = send.replace("{MESSAGE}", message);
+                Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
+            } catch (ChannelNotFoundException ex) {
+                this.plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                this.plugin.communicate(name, ex.getMessage());
+            }
         }
     }
 
@@ -274,7 +282,7 @@ public class ChannelManager {
             }
         }
     }
-    
+
     public void unmute(String channel, String... names) throws ChannelNotFoundException {
         if (channel != null) {
             if (this.channels.get(channel) == null) {
@@ -300,10 +308,10 @@ public class ChannelManager {
             }
         }
     }
-    
+
     /**
      * Returns whether or not a player is muted in a channel
-     * 
+     *
      * @param name The name to check
      * @param channel The channel to check against, null for a global check
      * @return True if muted in the channel, false otherwise
