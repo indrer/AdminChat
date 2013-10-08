@@ -50,8 +50,12 @@ public class CommandHandler implements CommandExecutor {
                     this.plugin.reload();
                 }
                 return false;
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("muteall") && sender.hasPermission("adminchat.muteall")) {
+                
             }
         }
+        
+        // This needs to be rewritten using getCommand(command)
         boolean toggle = false;
         if (commandLabel.toLowerCase().endsWith("toggle")) {
             toggle = true;
@@ -120,5 +124,9 @@ public class CommandHandler implements CommandExecutor {
             }
             this.plugin.getCommand("adminchat").setExecutor(this);
         }
+    }
+    
+    private ACCommand getCommand(String cmd) {
+        return null;
     }
 }

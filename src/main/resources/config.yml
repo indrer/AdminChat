@@ -1,1 +1,4 @@
 update-check: true
+default-chan:
+  enabled: false
+  default: main

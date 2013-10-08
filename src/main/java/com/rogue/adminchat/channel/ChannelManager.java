@@ -88,15 +88,19 @@ public class ChannelManager {
                 Permission perm = new Permission("adminchat.channel." + s);
                 Permission read = new Permission("adminchat.channel." + s + ".read");
                 Permission send = new Permission("adminchat.channel." + s + ".send");
+                Permission mute = new Permission("adminchat.channel." + s + ".mute");
                 perm.setDefault(PermissionDefault.OP);
                 perm.addParent("adminchat.channel.*", true);
                 read.addParent("adminchat.channel." + s, true);
                 send.addParent("adminchat.channel." + s, true);
+                mute.addParent("adminchat.mute." + s, true);
+                mute.addParent("adminchat.muteall", true);
                 try {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
                     Bukkit.getPluginManager().addPermission(read);
                     Bukkit.getPluginManager().addPermission(send);
+                    Bukkit.getPluginManager().addPermission(mute);
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }
@@ -122,9 +126,11 @@ public class ChannelManager {
                     for (String s : this.channels.keySet()) {
                         PluginCommand pc = this.getCommand(s, this.plugin);
                         PluginCommand pctoggle = this.getCommand(s + "toggle", this.plugin);
+                        PluginCommand pcmute = this.getCommand(s + "mute", this.plugin);
                         if (pc != null && pctoggle != null) {
                             scm.register(".", pc);
                             scm.register(".", pctoggle);
+                            scm.register(".", pcmute);
                         }
                     }
                 }
