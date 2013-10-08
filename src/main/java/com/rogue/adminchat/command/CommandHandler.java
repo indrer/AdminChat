@@ -16,14 +16,19 @@
  */
 package com.rogue.adminchat.command;
 
+import static com.rogue.adminchat.command.CommandType.*;
 import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
 import com.rogue.adminchat.channel.ChannelManager;
-import static com.rogue.adminchat.command.CommandType.MUTE;
-import static com.rogue.adminchat.command.CommandType.NORMAL;
-import static com.rogue.adminchat.command.CommandType.TOGGLE;
+import com.rogue.adminchat.channel.ChannelNotFoundException;
+import com.rogue.adminchat.runnable.UnmuteRunnable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +50,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("adminchat")) {
             if (args.length == 1 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("adminchat.reload")) {
                 if (sender instanceof Player) {
@@ -53,67 +58,133 @@ public class CommandHandler implements CommandExecutor {
                 } else {
                     this.plugin.reload();
                 }
-                return false;
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("muteall") && sender.hasPermission("adminchat.muteall")) {
+                return true;
+            } else if (args.length >= 2 && args[0].equalsIgnoreCase("muteall") && sender.hasPermission("adminchat.muteall")) {
+                long time = Long.parseLong(args[1]);
+                if (args.length < 3) {
+                    this.plugin.setGlobalMute(true);
+                    this.plugin.getExecutiveManager().runAsyncTask(new Runnable() {
+                        @Override
+                        public void run() {
+                            plugin.setGlobalMute(false);
+                        }
+                    }, time);
+                } else {
+                    StringBuilder badtargets = new StringBuilder();
+                    int badtar = 0;
+                    List<String> targets = new ArrayList();
+                    for (int i = 2; i < args.length; i++) {
+                        Player target = this.plugin.getServer().getPlayer(args[i]);
+                        if (target == null) {
+                            badtargets.append("&c").append(args[2]).append("&a, ");
+                            badtar++;
+                        } else {
+                            targets.add(target.getName());
+                        }
+                        try {
+                            this.plugin.getChannelManager().mute(null, targets.toArray(new String[targets.size()]));
+                            this.plugin.getExecutiveManager().runAsyncTask(new UnmuteRunnable(
+                                    this.plugin,
+                                    null,
+                                    targets.toArray(new String[targets.size()])), time);
+                        } catch (ChannelNotFoundException ex) {
+                            this.plugin.communicate(sender.getName(), ex.getMessage());
+                        }
+                    }
+                    if (badtargets.length() != 0) {
+                        this.plugin.communicate(sender.getName(), "Player" + ((badtar == 1) ? "" : "s") + " " + badtargets.substring(0, badtargets.length() - 2) + " not found!");
+                        return true;
+                    }
+                }
             }
         }
 
         /* begin rewrite */
-        ChannelManager manager = this.plugin.getChannelManager();
+        final ChannelManager manager = this.plugin.getChannelManager();
         final Map<String, Channel> channels;
         synchronized (channels = manager.getChannels()) {
             ACCommand command = this.getCommand(commandLabel);
             String chanName = manager.getChannel(command.getCommand()).getName();
+            Player target;
+            final String channel = command.getCommand();
             switch (command.getType()) {
                 case NORMAL:
-                    
+                    StringBuilder msg = new StringBuilder();
+                    if (args.length > 0) {
+                        for (String s : args) {
+                            msg.append(s).append(" ");
+                        }
+                        String name;
+                        if (sender instanceof Player) {
+                            name = sender.getName();
+                        } else {
+                            name = "CONSOLE";
+                        }
+                        manager.sendMessage(commandLabel, name, msg.toString().trim());
+                    }
                     break;
                 case TOGGLE:
-                    break;
-                case MUTE:
-                    break;
-            }
-        }
-
-        /* end rewrite */
-
-        // This needs to be rewritten using getCommand(command)
-        boolean toggle = false;
-        if (commandLabel.toLowerCase().endsWith("toggle")) {
-            toggle = true;
-            commandLabel = commandLabel.substring(0, commandLabel.length() - 6);
-        }
-        if (this.plugin.getChannelManager().getChannels().containsKey(commandLabel)
-                && sender.hasPermission("adminchat.channel."
-                + this.plugin.getChannelManager().getChannels().get(commandLabel).getName()
-                + ".send")) {
-            if (toggle) {
-                if (sender instanceof Player) {
-                    synchronized (this.toggled) {
-                        String chan = this.toggled.get(sender.getName());
-                        if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
-                            this.toggled.remove(sender.getName());
-                            this.plugin.communicate((Player) sender, "Automatic chat disabled!");
-                        } else {
-                            this.toggled.put(sender.getName(), commandLabel);
-                            this.plugin.communicate((Player) sender, "Now chatting in channel: '" + commandLabel + "'!");
+                    if (sender instanceof Player) {
+                        synchronized (this.toggled) {
+                            String chan = this.toggled.get(sender.getName());
+                            if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
+                                this.toggled.remove(sender.getName());
+                                this.plugin.communicate((Player) sender, "Automatic chat disabled!");
+                            } else {
+                                this.toggled.put(sender.getName(), commandLabel);
+                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + manager.getChannel(chan).getName() + "'!");
+                            }
                         }
                     }
-                }
-            } else {
-                StringBuilder msg = new StringBuilder();
-                if (args.length > 0) {
-                    for (String s : args) {
-                        msg.append(s).append(" ");
+                    break;
+                case MUTE:
+                    if (args.length < 2) {
+                        this.plugin.communicate(sender.getName(), "Invalid arguments.");
+                        this.plugin.communicate(sender.getName(), "Usage: &c/<chan>mute <Player> <time> [channel]");
                     }
-                    String name;
-                    if (sender instanceof Player) {
-                        name = sender.getName();
+                    target = this.plugin.getServer().getPlayer(args[0]);
+                    if (target == null) {
+                        this.plugin.communicate(sender.getName(), "Unknown player: &c" + args[0]);
+                        return true;
+                    }
+                    long time = Long.parseLong(args[1]);
+                    final String name = target.getName();
+                    try {
+                        manager.mute(channel, target.getName());
+                        this.plugin.getExecutiveManager().runAsyncTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    manager.unmute(channel, name);
+                                } catch (ChannelNotFoundException ex) {
+                                    plugin.communicate(sender.getName(), ex.getMessage());
+                                }
+                            }
+                        }, time);
+                    } catch (ChannelNotFoundException ex) {
+                        this.plugin.communicate(sender.getName(), ex.getMessage());
+                    }
+                    break;
+                case UNMUTE:
+                    if (args.length == 1) {
+                        target = Bukkit.getPlayer(args[0]);
+                        if (target == null) {
+                            this.plugin.communicate(sender.getName(), "Unknown Player: &c" + args[0]);
+                            return true;
+                        }
+                        try {
+                            manager.unmute(channel, target.getName());
+                        } catch (ChannelNotFoundException ex) {
+                            Logger.getLogger(CommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
-                        name = "CONSOLE";
+                        this.plugin.communicate(sender.getName(), "Invalid arguments.");
+                        this.plugin.communicate(sender.getName(), "Usage: &c/<chan>mute <Player> <time> [channel]");
                     }
-                    this.plugin.adminBroadcast(commandLabel, name, msg.toString().trim());
-                }
+                    break;
+                default:
+                    this.plugin.communicate(sender.getName(), "Unknown Command!");
+                    break;
             }
         }
         return false;

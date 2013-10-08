@@ -11,6 +11,7 @@ permissions:
     children:
     - adminchat.channel.*
     - adminchat.reload
+    - adminchat.muteall
 commands:
   adminchat:
     description: Adminchat's main command interface

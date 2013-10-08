@@ -54,7 +54,7 @@ public class AdminListener implements Listener {
             String chan = toggled.get(name);
             if (chan != null) {
                 event.setCancelled(true);
-                plugin.adminBroadcast(toggled.get(name), name, event.getMessage());
+                plugin.getChannelManager().sendMessage(toggled.get(name), name, event.getMessage());
             }
         }
     }

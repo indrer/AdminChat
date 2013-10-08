@@ -30,13 +30,11 @@ public class Channel {
     private final String name;
     private final String command;
     private final String format;
-    private final List<String> muted;
 
     public Channel(String cmdname, String cmdtag, String cmdformat) {
         name = cmdname;
         command = cmdtag;
         format = cmdformat;
-        this.muted = new ArrayList();
     }
 
     /**
@@ -73,21 +71,5 @@ public class Channel {
      */
     public String getFormat() {
         return format;
-    }
-    
-    /**
-     * Returns a list of the muted players in this channel
-     * 
-     * @since 1.3.2
-     * @version 1.3.2
-     * 
-     * @return All muted players for the channel
-     */
-    public List<String> getMuted() {
-        return this.muted;
-    }
-    
-    public boolean isMuted(String name) {
-        return this.muted.contains(name);
     }
 }

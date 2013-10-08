@@ -16,9 +16,9 @@
  */
 package com.rogue.adminchat;
 
-import com.rogue.adminchat.channel.Channel;
 import com.rogue.adminchat.channel.ChannelManager;
 import com.rogue.adminchat.command.CommandHandler;
+import com.rogue.adminchat.executables.ExecutiveManager;
 import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
 import java.io.File;
@@ -44,7 +44,9 @@ public final class AdminChat extends JavaPlugin {
     private AdminListener listener;
     private ChannelManager cmanager;
     private CommandHandler chandle;
+    private ExecutiveManager emanager;
     private boolean isUpdate = false;
+    private boolean globalMute = false;
 
     @Override
     public void onLoad() {
@@ -73,6 +75,9 @@ public final class AdminChat extends JavaPlugin {
         } catch (IOException ex) {
             Logger.getLogger(AdminChat.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        this.getLogger().info("Enabling executive manager...");
+        this.emanager = new ExecutiveManager(this);
 
         if (this.getConfig().getBoolean("update-check")) {
             Bukkit.getScheduler().runTaskLater(this, new UpdateRunnable(this), 10L);
@@ -198,5 +203,29 @@ public final class AdminChat extends JavaPlugin {
      */
     public CommandHandler getCommandHandler() {
         return this.chandle;
+    }
+    
+    /**
+     * Gets the scheduler for plugin tasks
+     * 
+     * @since 1.3.2
+     * @version 1.3.2
+     * 
+     * @return The scheduler for AdminChat
+     */
+    public ExecutiveManager getExecutiveManager() {
+        return this.emanager;
+    }
+    
+    /**
+     * Sets whether or not to globally mute everyone without an override perm.
+     * 
+     * @since 1.3.2
+     * @version 1.3.2
+     * 
+     * @param mute TRue to mute all, false otherwise
+     */
+    public void setGlobalMute(boolean mute) {
+        this.globalMute = mute;
     }
 }

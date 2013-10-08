@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -44,6 +47,7 @@ import org.bukkit.plugin.SimplePluginManager;
  */
 public class ChannelManager {
 
+    private final Map<String, List<String>> mutes = new HashMap();
     private final Map<String, Channel> channels = new ConcurrentHashMap();
     private final AdminChat plugin;
 
@@ -126,12 +130,14 @@ public class ChannelManager {
                 if (!this.channels.keySet().isEmpty()) {
                     for (String s : this.channels.keySet()) {
                         PluginCommand pc = this.getCommand(s, this.plugin);
-                        PluginCommand pctoggle = this.getCommand(s + "toggle", this.plugin);
-                        PluginCommand pcmute = this.getCommand(s + "mute", this.plugin);
-                        if (pc != null && pctoggle != null) {
+                        PluginCommand toggle = this.getCommand(s + "toggle", this.plugin);
+                        PluginCommand mute = this.getCommand(s + "mute", this.plugin);
+                        PluginCommand unmute = this.getCommand(s + "unmute", this.plugin);
+                        if (pc != null && toggle != null && mute != null && unmute != null) {
                             scm.register(".", pc);
-                            scm.register(".", pctoggle);
-                            scm.register(".", pcmute);
+                            scm.register(".", toggle);
+                            scm.register(".", mute);
+                            scm.register(".", unmute);
                         }
                     }
                 }
@@ -209,7 +215,7 @@ public class ChannelManager {
             return chans.get(name);
         }
     }
-    
+
     /**
      * Parses the format string and sends it to players
      *
@@ -226,5 +232,68 @@ public class ChannelManager {
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
         Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
+    }
+
+    /**
+     * Adds passed player names to a mute list. Does not verify the names are
+     * players.
+     *
+     * @since 1.3.2
+     * @version 1.3.2
+     *
+     * @param channel Channel to mute in
+     * @param names Names to mute
+     * @return True if all names were successfully added.
+     */
+    public void mute(String channel, String... names) throws ChannelNotFoundException {
+        if (channel != null) {
+            if (this.channels.get(channel) == null) {
+                throw new ChannelNotFoundException("Unknown channel: " + channel);
+            } else {
+                for (String name : names) {
+                    synchronized (this.mutes) {
+                        List<String> muted = this.mutes.remove(name);
+                        if (muted != null) {
+                            muted.add(channel);
+                            this.mutes.put(name, muted);
+                        } else {
+                            this.mutes.put(name, Arrays.asList(new String[]{channel}));
+                        }
+                    }
+                }
+            }
+        } else {
+            for (String name : names) {
+                synchronized (this.mutes) {
+                    this.mutes.put(name, null);
+                }
+            }
+        }
+    }
+    
+    public void unmute(String channel, String... names) throws ChannelNotFoundException {
+        if (channel != null) {
+            if (this.channels.get(channel) == null) {
+                throw new ChannelNotFoundException("Unknown Channel: " + channel);
+            } else {
+                for (String name : names) {
+                    synchronized (this.mutes) {
+                        List<String> muted = this.mutes.remove(name);
+                        if (muted != null) {
+                            muted.add(channel);
+                            this.mutes.put(name, muted);
+                        } else {
+                            this.mutes.put(name, Arrays.asList(channel));
+                        }
+                    }
+                }
+            }
+        } else {
+            for (String name : names) {
+                synchronized (this.mutes) {
+                    this.mutes.put(name, null);
+                }
+            }
+        }
     }
 }

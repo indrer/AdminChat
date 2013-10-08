@@ -25,7 +25,8 @@ public enum CommandType {
     
     NORMAL("normal"),
     TOGGLE("toggle"),
-    MUTE("mute");
+    MUTE("mute"),
+    UNMUTE("unmute");
     private final String name;
     
     private CommandType(String name) {
