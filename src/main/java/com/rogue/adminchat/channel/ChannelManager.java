@@ -162,6 +162,7 @@ public class ChannelManager {
      *
      * @param name Command Label
      * @param plugin Plugin instance
+     * 
      * @return New PluginCommand object, or null upon an exception
      */
     private PluginCommand getCommand(String name, Plugin plugin) {
@@ -208,6 +209,9 @@ public class ChannelManager {
      * @version 1.3.0
      *
      * @param name The channel command
+     * 
+     * @throws ChannelNotFoundException If no channel is found by the provided name
+     * 
      * @return The channel object, null if channel does not exist
      */
     public synchronized Channel getChannel(String name) throws ChannelNotFoundException {
@@ -217,6 +221,19 @@ public class ChannelManager {
         } else {
             throw new ChannelNotFoundException("Unknown Channel: &c" + name);
         }
+    }
+    
+    /**
+     * Checks if there is a channel by the command name
+     * 
+     * @since 1.3.2
+     * @version 1.3.2
+     * 
+     * @param name The command used to call the channel
+     * @return True if exists, false otherwise
+     */
+    public synchronized boolean isChannel(String name) {
+        return this.channels.containsKey(name);
     }
 
     /**
@@ -255,6 +272,9 @@ public class ChannelManager {
      *
      * @param channel Channel to mute in
      * @param names Names to mute
+     * 
+     * @throws ChannelNotFoundException If no channel is found by the provided name
+     * 
      * @return True if all names were successfully added.
      */
     public void mute(String channel, String... names) throws ChannelNotFoundException {
@@ -283,6 +303,17 @@ public class ChannelManager {
         }
     }
 
+    /**
+     * Unmutes a player within a channel, or globally
+     * 
+     * @since 1.3.2
+     * @version 1.3.2
+     * 
+     * @param channel The channel to mute in, null if global
+     * @param names Players to mute by name
+     * 
+     * @throws ChannelNotFoundException If no channel is found by the provided name
+     */
     public void unmute(String channel, String... names) throws ChannelNotFoundException {
         if (channel != null) {
             if (this.channels.get(channel) == null) {
@@ -314,6 +345,7 @@ public class ChannelManager {
      *
      * @param name The name to check
      * @param channel The channel to check against, null for a global check
+     * 
      * @return True if muted in the channel, false otherwise
      */
     public synchronized boolean isMuted(String name, String channel) {

@@ -104,6 +104,9 @@ public class CommandHandler implements CommandExecutor {
         final Map<String, Channel> channels;
         synchronized (channels = manager.getChannels()) {
             ACCommand command = this.getCommand(commandLabel);
+            if (command == null) {
+                this.plugin.communicate(sender.getName(), "Unknown command: &c" + commandLabel);
+            }
             String chanName;
             try {
                 chanName = manager.getChannel(command.getCommand()).getName();
@@ -233,6 +236,25 @@ public class CommandHandler implements CommandExecutor {
      * @return The {@link ACCommand} version of the command
      */
     private ACCommand getCommand(String cmd) {
+        if (cmd.endsWith("toggle")) {
+            String command = cmd.substring(0, cmd.length() - 6);
+            if (this.plugin.getChannelManager().isChannel(command)) {
+                return new ACCommand(command, CommandType.TOGGLE);
+            }
+        } else if (cmd.endsWith("unmute")) {
+            String command = cmd.substring(0, cmd.length() - 6);
+            if (this.plugin.getChannelManager().isChannel(command)) {
+                return new ACCommand(command, CommandType.UNMUTE);
+            }
+        } if (cmd.endsWith("mute")) {
+            String command = cmd.substring(0, cmd.length() - 4);
+            if (this.plugin.getChannelManager().isChannel(command)) {
+                return new ACCommand(command, CommandType.MUTE);
+            }
+        }
+        if (this.plugin.getChannelManager().isChannel(cmd)) {
+            return new ACCommand(cmd, CommandType.NORMAL);
+        }
         return null;
     }
 }
