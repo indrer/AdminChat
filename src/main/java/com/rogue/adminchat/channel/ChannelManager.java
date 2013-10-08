@@ -231,7 +231,11 @@ public class ChannelManager {
         String send = chan.getFormat();
         send = send.replace("{NAME}", name);
         send = send.replace("{MESSAGE}", message);
-        Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
+        if (this.isMuted(name, channel)) {
+            this.plugin.communicate(name, "You are muted this channel!");
+        } else {
+            Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");   
+        }
     }
 
     /**
@@ -294,6 +298,22 @@ public class ChannelManager {
                     this.mutes.put(name, null);
                 }
             }
+        }
+    }
+    
+    /**
+     * Returns whether or not a player is muted in a channel
+     * 
+     * @param name The name to check
+     * @param channel The channel to check against, null for a global check
+     * @return True if muted in the channel, false otherwise
+     */
+    public synchronized boolean isMuted(String name, String channel) {
+        if (this.mutes.containsKey(name)) {
+            List<String> chans = this.mutes.get(name);
+            return chans == null || chans.contains(channel);
+        } else {
+            return false;
         }
     }
 }
