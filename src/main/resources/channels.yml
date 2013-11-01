@@ -1,9 +1,8 @@
 channels:
   adminchat:
-    formatted-name: false
     command: 'ac'
     format: '&aADMIN: {NAME}: &c{MESSAGE}'
   main:
     formatted-name: true
-    command: 'ac'
-    format: '{PREFIX}{NAME}&f: {SUFFIX}{MESSAGE}'
+    command: 'main'
+    format: '{PREFIX}{DISPLAYNAME}&f: {SUFFIX}{MESSAGE}'

@@ -98,8 +98,6 @@ public class CommandHandler implements CommandExecutor {
                 }
             }
         }
-
-        /* begin rewrite */
         final ChannelManager manager = this.plugin.getChannelManager();
         final Map<String, Channel> channels;
         synchronized (channels = manager.getChannels()) {
@@ -142,7 +140,7 @@ public class CommandHandler implements CommandExecutor {
                                 this.plugin.communicate((Player) sender, "Automatic chat disabled!");
                             } else {
                                 this.toggled.put(sender.getName(), commandLabel);
-                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + chanName + "'!");
+                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + channel + "'!");
                             }
                         }
                     }

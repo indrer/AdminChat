@@ -58,12 +58,7 @@ public class UpdateRunnable implements Runnable {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             this.latest = reader.readLine();
             reader.close();
-            if (this.latest.equalsIgnoreCase(this.version)) {
-                this.isLatest = true;
-            } else {
-                this.isLatest = false;
-            }
-            this.plugin.setUpdateStatus(!isLatest);
+            this.plugin.setUpdateStatus(!this.latest.equalsIgnoreCase(this.version));
         } catch (MalformedURLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Error checking for update", ex);
         } catch (IOException ex) {

@@ -71,7 +71,7 @@ public class AdminListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (e.getPlayer().hasPermission("adminchat.updatenotice")) {
             if (plugin.isOutOfDate()) {
-                plugin.communicate(e.getPlayer(), "An update for Adminchat is available!");
+                plugin.communicate(e.getPlayer(), "An update is available for Adminchat!");
             }
         }
     }
