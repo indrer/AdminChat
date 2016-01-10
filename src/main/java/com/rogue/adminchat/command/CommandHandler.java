@@ -16,29 +16,30 @@
  */
 package com.rogue.adminchat.command;
 
-import static com.rogue.adminchat.command.CommandType.*;
 import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
 import com.rogue.adminchat.channel.ChannelManager;
 import com.rogue.adminchat.channel.ChannelNotFoundException;
 import com.rogue.adminchat.runnable.UnmuteRunnable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @since 1.3.0
  * @author 1Rogue
- * @version 1.3.1
+ * @author MD678685
+ * @version 1.4.0
  */
 public class CommandHandler implements CommandExecutor {
 
@@ -49,7 +50,6 @@ public class CommandHandler implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
     public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (commandLabel.equalsIgnoreCase("adminchat")) {
             if (args.length == 1 && args[0].equalsIgnoreCase("reload") && sender.hasPermission("adminchat.reload")) {
@@ -64,7 +64,6 @@ public class CommandHandler implements CommandExecutor {
                 if (args.length < 3) {
                     this.plugin.setGlobalMute(true);
                     this.plugin.getExecutiveManager().runAsyncTask(new Runnable() {
-                        @Override
                         public void run() {
                             plugin.setGlobalMute(false);
                         }
@@ -101,7 +100,7 @@ public class CommandHandler implements CommandExecutor {
         final ChannelManager manager = this.plugin.getChannelManager();
         final Map<String, Channel> channels;
         synchronized (channels = manager.getChannels()) {
-            ACCommand command = this.getCommand(commandLabel);
+            ACCommand command = this.getCommand(commandLabel, args);
             if (command == null) {
                 this.plugin.communicate(sender.getName(), "Unknown command: &c" + commandLabel);
             }
@@ -160,7 +159,6 @@ public class CommandHandler implements CommandExecutor {
                     try {
                         manager.mute(channel, target.getName());
                         this.plugin.getExecutiveManager().runAsyncTask(new Runnable() {
-                            @Override
                             public void run() {
                                 try {
                                     manager.unmute(channel, name);
@@ -233,7 +231,7 @@ public class CommandHandler implements CommandExecutor {
      * @param cmd The command to try against
      * @return The {@link ACCommand} version of the command
      */
-    private ACCommand getCommand(String cmd) {
+    private ACCommand getCommand(String cmd, String[] args) {
         if (cmd.endsWith("toggle")) {
             String command = cmd.substring(0, cmd.length() - 6);
             if (this.plugin.getChannelManager().isChannel(command)) {
@@ -251,7 +249,11 @@ public class CommandHandler implements CommandExecutor {
             }
         }
         if (this.plugin.getChannelManager().isChannel(cmd)) {
-            return new ACCommand(cmd, CommandType.NORMAL);
+            if (args.length > 0) {
+                return new ACCommand(cmd, CommandType.NORMAL);
+            } else {
+                return new ACCommand(cmd, CommandType.TOGGLE);
+            }
         }
         return null;
     }
