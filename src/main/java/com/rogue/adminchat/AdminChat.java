@@ -21,10 +21,6 @@ import com.rogue.adminchat.command.CommandHandler;
 import com.rogue.adminchat.executables.ExecutiveManager;
 import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,12 +28,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * AdminChat's main class
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.3.1
+ * @version 1.4.0
  */
 public final class AdminChat extends JavaPlugin {
 
@@ -47,6 +48,7 @@ public final class AdminChat extends JavaPlugin {
     private ExecutiveManager emanager;
     private boolean isUpdate = false;
     private boolean globalMute = false;
+    private String prefix;
 
     @Override
     public void onLoad() {
@@ -61,6 +63,9 @@ public final class AdminChat extends JavaPlugin {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
             if (!yaml.isSet("update-check")) {
                 yaml.set("update-check", true);
+            }
+            if (!yaml.isSet("prefix")) {
+                yaml.set("prefix", "&a[&cAdminChat&a] ");
             }
         }
     }
@@ -84,6 +89,8 @@ public final class AdminChat extends JavaPlugin {
         } else {
             this.getLogger().info("Update checking disabled!");
         }
+
+        this.prefix = this.getConfig().getString("prefix");
 
         this.getLogger().info("Enabling Command Handler...");
         this.chandle = new CommandHandler(this);
@@ -131,14 +138,14 @@ public final class AdminChat extends JavaPlugin {
      * Sends a message to a player through AdminChat
      *
      * @since 1.2.0
-     * @version 1.3.0
+     * @version 1.4.0
      *
      * @param player The player to send to
      * @param message The message to send
      */
     public void communicate(Player player, String message) {
         if (player != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a[&cAdminChat&a] " + message));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.prefix + message));
         }
     }
 
