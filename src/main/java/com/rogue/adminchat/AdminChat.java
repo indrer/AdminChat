@@ -23,12 +23,10 @@ import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +36,7 @@ import java.util.logging.Logger;
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.4.0
+ * @version 1.4.1
  */
 public final class AdminChat extends JavaPlugin {
 
@@ -49,26 +47,6 @@ public final class AdminChat extends JavaPlugin {
     private boolean isUpdate = false;
     private boolean globalMute = false;
     private String prefix;
-
-    @Override
-    public void onLoad() {
-        File file = new File(this.getDataFolder(), "config.yml");
-        if (this.getDataFolder().exists()) {
-            this.getDataFolder().mkdir();
-        }
-        if (!file.exists()) {
-            this.saveDefaultConfig();
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        } else {
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            if (!yaml.isSet("update-check")) {
-                yaml.set("update-check", true);
-            }
-            if (!yaml.isSet("prefix")) {
-                yaml.set("prefix", "&a[&cAdminChat&a] ");
-            }
-        }
-    }
 
     @Override
     public void onEnable() {
@@ -83,6 +61,13 @@ public final class AdminChat extends JavaPlugin {
         
         this.getLogger().info("Enabling executive manager...");
         this.emanager = new ExecutiveManager(this);
+
+
+        if (!this.getConfig().isSet("update-check") || !this.getConfig().isSet("prefix"))  {
+            this.getConfig().options().copyDefaults(true);
+            this.saveConfig();
+            this.reloadConfig();
+        }
 
         if (this.getConfig().getBoolean("update-check")) {
             Bukkit.getScheduler().runTaskLater(this, new UpdateRunnable(this), 10L);
