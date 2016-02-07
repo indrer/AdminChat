@@ -17,18 +17,6 @@
 package com.rogue.adminchat.channel;
 
 import com.rogue.adminchat.AdminChat;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -40,11 +28,24 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
 /**
  *
  * @since 1.3.0
  * @author 1Rogue
- * @version 1.3.1
+ * @author MD678685
+ * @version 1.4.2
  */
 public class ChannelManager {
 
@@ -240,7 +241,7 @@ public class ChannelManager {
      * Parses the format string and sends it to players
      *
      * @since 1.2.0
-     * @version 1.3.1
+     * @version 1.4.3
      *
      * @param channel The channel to send to, based on command
      * @param name The user sending the message
@@ -252,6 +253,12 @@ public class ChannelManager {
         } else {
             try {
                 Channel chan = this.getChannel(channel);
+                if (!(name == "CONSOLE")) {
+                    if (!this.plugin.getServer().getPlayer(name).hasPermission("adminchat.channel." + chan.getName())) {
+                        this.plugin.communicate(name, "You don't have permission to chat here.");
+                        return;
+                    }
+                }
                 String send = chan.getFormat();
                 send = send.replace("{NAME}", name);
                 send = send.replace("{MESSAGE}", message);
