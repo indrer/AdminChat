@@ -8,8 +8,8 @@
   
   <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
     </repositories>
     <licenses>
@@ -37,12 +37,18 @@
   </build>
   
   <dependencies>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.2</version>
-            <type>jar</type>
-        </dependency>
+      <dependency>
+          <groupId>org.bukkit</groupId>
+          <artifactId>bukkit</artifactId>
+          <version>1.9.2-R0.1-SNAPSHOT</version>
+          <type>jar</type>
+      </dependency>
+      <dependency>
+          <groupId>org.spigotmc</groupId>
+          <artifactId>spigot-api</artifactId>
+          <version>1.9.2-R0.1-SNAPSHOT</version>
+          <type>jar</type>
+      </dependency>
     </dependencies>
 
   <properties>

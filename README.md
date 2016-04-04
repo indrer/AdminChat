@@ -1,1 +1,2 @@
-Admin chat allows admins to have private conversations about users or any other server issues without disrupting the public or letting everyone see what they are discussing.
+# AdminChat
+AdminChat is a plugin which allows players to have conversations in configurable channels. While the plugin is called _Admin_Chat, you can create channels for virtually any purpose.
