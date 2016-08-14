@@ -19,13 +19,13 @@ package com.rogue.adminchat;
 import com.rogue.adminchat.channel.ChannelManager;
 import com.rogue.adminchat.command.CommandHandler;
 import com.rogue.adminchat.executables.ExecutiveManager;
+import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import java.io.IOException;
 import java.util.logging.Level;
