@@ -16,6 +16,8 @@
  */
 package com.rogue.adminchat.runnable;
 
+import com.rogue.adminchat.AdminChat;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
-import com.rogue.adminchat.AdminChat;
 
 /**
  * Adopted from TotalPermissions
@@ -34,7 +35,7 @@ import com.rogue.adminchat.AdminChat;
  */
 public class UpdateRunnable implements Runnable {
 
-    private final String VERSION_URL = "https://raw.github.com/1Rogue/AdminChat/master/VERSION";
+    private final String VERSION_URL = "https://raw.github.com/md678685/AdminChat/master/VERSION";
     private Boolean isLatest = null;
     private String latest;
     private String version;
