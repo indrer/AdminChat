@@ -136,10 +136,10 @@ public class ChannelManager {
                         PluginCommand mute = this.getCommand(s + "mute", this.plugin);
                         PluginCommand unmute = this.getCommand(s + "unmute", this.plugin);
                         if (pc != null && toggle != null && mute != null && unmute != null) {
-                            scm.register(".", pc);
-                            scm.register(".", toggle);
-                            scm.register(".", mute);
-                            scm.register(".", unmute);
+                            scm.register("adminchat", pc);
+                            scm.register("adminchat", toggle);
+                            scm.register("adminchat", mute);
+                            scm.register("adminchat", unmute);
                         }
                     }
                 }
