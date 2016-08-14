@@ -253,15 +253,21 @@ public class ChannelManager {
         } else {
             try {
                 Channel chan = this.getChannel(channel);
+                String displayName;
                 if (!(name == "CONSOLE")) {
                     if (!this.plugin.getServer().getPlayer(name).hasPermission("adminchat.channel." + chan.getName())) {
                         this.plugin.communicate(name, "You don't have permission to chat here.");
                         return;
                     }
+                    displayName = Bukkit.getServer().getPlayer(name).getDisplayName();
+
+                } else {
+                    displayName = "CONSOLE";
                 }
                 String send = chan.getFormat();
                 send = send.replace("{NAME}", name);
                 send = send.replace("{MESSAGE}", message);
+                send = send.replace("{DISPLAYNAME}", displayName);
                 Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
             } catch (ChannelNotFoundException ex) {
                 this.plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
