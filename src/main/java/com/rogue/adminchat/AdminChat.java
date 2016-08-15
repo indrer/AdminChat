@@ -23,7 +23,7 @@ import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,7 +36,8 @@ import java.util.logging.Logger;
  *
  * @since 1.0
  * @author 1Rogue
- * @version 1.4.1
+ * @author MD678685
+ * @version 1.4.5
  */
 public final class AdminChat extends JavaPlugin {
 
@@ -123,12 +124,12 @@ public final class AdminChat extends JavaPlugin {
      * Sends a message to a player through AdminChat
      *
      * @since 1.2.0
-     * @version 1.4.0
+     * @version 1.4.5
      *
-     * @param player The player to send to
+     * @param player The player or command sender to send to
      * @param message The message to send
      */
-    public void communicate(Player player, String message) {
+    public void communicate(CommandSender player, String message) {
         if (player != null) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', this.prefix + message));
         }
