@@ -46,14 +46,14 @@ public class MainCommand {
                         }
                     }, time);
                 } else {
-                    StringBuilder badtargets = new StringBuilder();
-                    int badtar = 0;
+                    StringBuilder invalidTargets = new StringBuilder();
+                    int invalidTargetCount = 0;
                     List<String> targets = new ArrayList();
                     for (int i = 2; i < args.length; i++) {
                         Player target = this.plugin.getServer().getPlayer(args[i]);
                         if (target == null) {
-                            badtargets.append("&c").append(args[2]).append("&a, ");
-                            badtar++;
+                            invalidTargets.append("&c").append(args[2]).append("&a, ");
+                            invalidTargetCount++;
                         } else {
                             targets.add(target.getName());
                         }
@@ -67,8 +67,8 @@ public class MainCommand {
                             this.plugin.communicate(sender, ex.getMessage());
                         }
                     }
-                    if (badtargets.length() != 0) {
-                        this.plugin.communicate(sender, "Player" + ((badtar == 1) ? "" : "s") + " " + badtargets.substring(0, badtargets.length() - 2) + " not found!");
+                    if (invalidTargets.length() != 0) {
+                        this.plugin.communicate(sender, "Player" + ((invalidTargetCount == 1) ? "" : "s") + " " + invalidTargets.substring(0, invalidTargets.length() - 2) + " not found!");
                         return true;
                     }
                 }
