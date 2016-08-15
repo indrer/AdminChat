@@ -12,6 +12,7 @@ permissions:
     - adminchat.channel.*
     - adminchat.reload
     - adminchat.muteall
+    - adminchat.help
 commands:
   adminchat:
     description: Adminchat's main command interface

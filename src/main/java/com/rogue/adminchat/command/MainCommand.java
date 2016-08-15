@@ -77,6 +77,10 @@ public class MainCommand {
                 this.plugin.communicate(sender, "/adminchat muteall <time> [players...]");
                 return true;
             }
+        } else if (args[0] == "help" && sender.hasPermission("adminchat.help")) {
+            this.plugin.communicate(sender, "/adminchat help - displays help");
+            this.plugin.communicate(sender, "/adminchat muteall <time> [players...] - mutes [players...] or everyone for <time> seconds");
+            this.plugin.communicate(sender, "/adminchat reload - reloads AdminChat");
         } else {
             this.plugin.communicate(sender, "Command " + args[0] + " not recognised!");
             this.plugin.communicate(sender, "For a list of valid subcommands, type /adminchat help!");
