@@ -41,11 +41,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
+ * Class for managing chat channels
  *
  * @since 1.3.0
  * @author 1Rogue
  * @author MD678685
- * @version 1.4.2
+ * @version 1.5.0
  */
 public class ChannelManager {
 
@@ -91,7 +92,7 @@ public class ChannelManager {
             String cmd = yaml.getString("channels." + s + ".command");
             if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
-                this.channels.put(cmd, new Channel(s, cmd, format));
+                this.channels.put(cmd, new Channel(plugin, s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + s);
                 Permission read = new Permission("adminchat.channel." + s + ".read");
                 Permission send = new Permission("adminchat.channel." + s + ".send");
@@ -247,6 +248,7 @@ public class ChannelManager {
      * @param name The user sending the message
      * @param message The message to send to others in the channel
      */
+    @Deprecated
     public void sendMessage(String channel, String name, String message) {
         if (this.isMuted(name, channel)) {
             this.plugin.communicate(name, "You are muted this channel!");
@@ -357,16 +359,18 @@ public class ChannelManager {
      * Returns whether or not a player is muted in a channel
      *
      * @param name The name to check
-     * @param channel The channel to check against, null for a global check
+     * @param channel The channel to check against
      * 
      * @return True if muted in the channel, false otherwise
      */
+    @Deprecated
     public synchronized boolean isMuted(String name, String channel) {
-        if (this.mutes.containsKey(name)) {
-            List<String> chans = this.mutes.get(name);
-            return chans == null || chans.contains(channel);
-        } else {
-            return false;
+        boolean isMuted;
+        try {
+            isMuted = getChannel(channel).isMuted(this.plugin.getServer().getPlayer(name));
+        } catch (ChannelNotFoundException e) {
+            isMuted = false;
         }
+        return isMuted;
     }
 }
