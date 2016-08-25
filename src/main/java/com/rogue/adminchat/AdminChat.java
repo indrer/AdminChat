@@ -21,6 +21,7 @@ import com.rogue.adminchat.command.CommandHandler;
 import com.rogue.adminchat.executables.ExecutiveManager;
 import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
+import com.rogue.adminchat.util.FormatHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -48,6 +49,7 @@ public final class AdminChat extends JavaPlugin {
     private boolean isUpdate = false;
     private boolean globalMute = false;
     private String prefix;
+    private FormatHelper formatHelper;
 
     @Override
     public void onEnable() {
@@ -208,6 +210,15 @@ public final class AdminChat extends JavaPlugin {
      */
     public ExecutiveManager getExecutiveManager() {
         return this.emanager;
+    }
+
+    /**
+     * Gets the format helper for the plugin
+     *
+     * @return The current format helper
+     */
+    public FormatHelper getFormatHelper() {
+        return this.formatHelper;
     }
     
     /**
