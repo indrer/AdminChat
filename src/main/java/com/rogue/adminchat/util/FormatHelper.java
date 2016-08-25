@@ -26,10 +26,32 @@ public class FormatHelper {
      */
     public String formatMessage(String format, CommandSender sender, String message) {
 
-        return formatACMessage(format, sender, message);
+        return formatMessage(format, sender, message, formatter);
 
     }
 
+    /**
+     * Format a message to be sent from a chat channel using the specified formatter
+     *
+     * @param format Message format
+     * @param sender Message sender
+     * @param message Message to be formatted
+     * @return Formatted string
+     */
+    public String formatMessage(String format, CommandSender sender, String message, Formatter formatter) {
+
+        return formatMessage(format, sender, message);
+
+    }
+
+    /**
+     * Format a message using the default formatter
+     *
+     * @param format Message format
+     * @param sender Message sender
+     * @param message Message to be formatted
+     * @return Formatter string
+     */
     private String formatACMessage(String format, CommandSender sender, String message) {
 
         String displayName;
