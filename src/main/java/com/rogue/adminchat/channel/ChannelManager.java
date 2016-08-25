@@ -18,7 +18,7 @@ package com.rogue.adminchat.channel;
 
 import com.rogue.adminchat.AdminChat;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
@@ -239,6 +239,8 @@ public class ChannelManager {
     }
 
     /**
+     * Deprecated - use Channel#isMuted instead.
+     *
      * Parses the format string and sends it to players
      *
      * @since 1.2.0
@@ -250,31 +252,17 @@ public class ChannelManager {
      */
     @Deprecated
     public void sendMessage(String channel, String name, String message) {
-        if (this.isMuted(name, channel)) {
-            this.plugin.communicate(name, "You are muted this channel!");
+        CommandSender sender;
+        if (name == "CONSOLE") {
+            sender = this.plugin.getServer().getConsoleSender();
         } else {
-            try {
-                Channel chan = this.getChannel(channel);
-                String displayName;
-                if (!(name == "CONSOLE")) {
-                    if (!this.plugin.getServer().getPlayer(name).hasPermission("adminchat.channel." + chan.getName())) {
-                        this.plugin.communicate(name, "You don't have permission to chat here.");
-                        return;
-                    }
-                    displayName = Bukkit.getServer().getPlayer(name).getDisplayName();
-
-                } else {
-                    displayName = "CONSOLE";
-                }
-                String send = chan.getFormat();
-                send = send.replace("{NAME}", name);
-                send = send.replace("{MESSAGE}", message);
-                send = send.replace("{DISPLAYNAME}", displayName);
-                Bukkit.broadcast(ChatColor.translateAlternateColorCodes('&', send), "adminchat.channel." + chan.getName() + ".read");
-            } catch (ChannelNotFoundException ex) {
-                this.plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                this.plugin.communicate(name, ex.getMessage());
-            }
+            sender = this.plugin.getServer().getPlayer(name);
+        }
+        try {
+            this.getChannel(channel).sendMessage(sender, message);
+        } catch (ChannelNotFoundException e) {
+            this.plugin.communicate(sender, e.getMessage());
+            this.plugin.getLogger().log(Level.SEVERE, "Could not find channel: " + channel, e);
         }
     }
 
@@ -356,7 +344,11 @@ public class ChannelManager {
     }
 
     /**
+     * Deprecated - use Channel#isMuted instead.
+     *
      * Returns whether or not a player is muted in a channel
+     *
+     * @vesion 1.5.0
      *
      * @param name The name to check
      * @param channel The channel to check against
