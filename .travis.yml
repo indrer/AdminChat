@@ -3,3 +3,9 @@ branches:
   only:
   - master
   - dev
+notifications:
+  email:
+    recipients:
+      - dev@mdacosta.xyz
+    on_success: always
+    on_failure: always
