@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  */
 public class FormatHelper {
 
-    private final Formatter formatter;
+    private Formatter formatter;
 
     public FormatHelper(String formatterToUse) {
         formatter = Formatter.getFormatter(formatterToUse);
@@ -22,7 +22,7 @@ public class FormatHelper {
      * @param format Message format
      * @param sender Message sender
      * @param message Message to be formatted
-     * @return
+     * @return Formatted string
      */
     public String formatMessage(String format, CommandSender sender, String message) {
 
@@ -48,9 +48,9 @@ public class FormatHelper {
         return format;
     }
 
-    private enum Formatter {
+    public enum Formatter {
 
-        BASIC,
+        DEFAULT,
         VAULT,
         PLACEHOLDER_API;
 
