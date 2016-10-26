@@ -27,6 +27,7 @@ import java.util.HashSet;
  *
  * @since 1.3.0
  * @author 1Rogue
+ * @author MD678685
  * @version 1.5.0
  */
 public class Channel {

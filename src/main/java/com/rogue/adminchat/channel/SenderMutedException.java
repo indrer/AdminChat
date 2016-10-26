@@ -18,10 +18,14 @@ package com.rogue.adminchat.channel;
 
 /**
  *
- * @since 
- * @author 1Rogue
- * @version 
+ * @since 1.5.0
+ * @author MD678685
+ * @version 1.5.0
  */
-public class Muted {
+public class SenderMutedException extends Exception {
+
+    public SenderMutedException(String message) {
+        super(message);
+    }
 
 }
