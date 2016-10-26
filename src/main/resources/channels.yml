@@ -2,7 +2,9 @@ channels:
   adminchat:
     command: 'ac'
     format: '&aADMIN: {NAME}: &c{MESSAGE}'
+    permDefault: 'op'
   main:
     formatted-name: true
     command: 'main'
     format: '{PREFIX}{DISPLAYNAME}&f: {SUFFIX}{MESSAGE}'
+    permDefault: 'true'
