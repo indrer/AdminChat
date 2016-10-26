@@ -37,6 +37,7 @@ public class Channel {
     private final String command;
     private final String format;
     private final HashSet<CommandSender> mutedSenders;
+    private final HashSet<CommandSender> members;
 
     public Channel(AdminChat _plugin, String cmdname, String cmdtag, String cmdformat) {
         plugin = _plugin;
@@ -44,6 +45,7 @@ public class Channel {
         command = cmdtag;
         format = cmdformat;
         mutedSenders = new HashSet<CommandSender>();
+        members = new HashSet<CommandSender>();
     }
 
     /**
@@ -88,11 +90,10 @@ public class Channel {
      * @param sender The message sender
      * @param message The message to send
      */
-    public void sendMessage(CommandSender sender, String message) {
+    public void sendMessage(CommandSender sender, String message) throws SenderMutedException {
 
         if (this.isMuted(sender)) {
-            this.plugin.communicate(sender, "You are muted in this channel!");
-            return;
+            throw new SenderMutedException("You are muted in this channel!");
         }
 
         String formattedMessage = this.plugin.getFormatHelper().formatMessage(format, sender, message);
@@ -105,11 +106,46 @@ public class Channel {
      * Returns whether or not a player is muted in a channel
      *
      * @param sender The sender to check
-     *
+     * @since 1.4.0
+     * @version 1.5.0
      * @return True if muted in the channel, false otherwise
      */
     public synchronized boolean isMuted(CommandSender sender) {
         return mutedSenders.contains(sender);
+    }
+
+    /**
+     * Add a CommandSender to the channel.
+     * @param sender The sender to add
+     * @since 1.5.0
+     * @version 1.5.0
+     */
+    public synchronized void addMember(CommandSender sender) {
+        if (!members.contains(sender)) {
+            members.add(sender);
+        }
+    }
+
+    /**
+     * Remove a CommandSender from the channel.
+     * @param sender The sender to remove
+     * @since 1.5.0
+     * @version 1.5.0
+     */
+    public synchronized void removeMember(CommandSender sender) {
+        if (members.contains(sender)) {
+            members.remove(sender);
+        }
+    }
+
+    /**
+     * Gets members of the channel.
+     * @return A copy of the HashSet of members
+     * @since 1.5.0
+     * @version 1.5.0
+     */
+    public synchronized HashSet<CommandSender> getMembers() {
+        return (HashSet<CommandSender>) members.clone();
     }
 
 }
