@@ -40,7 +40,7 @@ public class FormatHelper {
      */
     public String formatMessage(String format, CommandSender sender, String message, Formatter formatter) {
 
-        return formatMessage(format, sender, message);
+        return formatACMessage(format, sender, message);
 
     }
 
