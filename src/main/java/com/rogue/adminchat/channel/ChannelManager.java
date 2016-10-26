@@ -90,6 +90,8 @@ public class ChannelManager {
         for (String s : sect.getKeys(false)) {
             String format = yaml.getString("channels." + s + ".format");
             String cmd = yaml.getString("channels." + s + ".command");
+            String permDefault = yaml.getString("channels." + s + ".permDefault");
+            permDefault = (permDefault != null ? permDefault : "op");
             if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
                 this.channels.put(cmd, new Channel(plugin, s, cmd, format));
@@ -97,7 +99,7 @@ public class ChannelManager {
                 Permission read = new Permission("adminchat.channel." + s + ".read");
                 Permission send = new Permission("adminchat.channel." + s + ".send");
                 Permission mute = new Permission("adminchat.channel." + s + ".mute");
-                perm.setDefault(PermissionDefault.OP);
+                perm.setDefault(PermissionDefault.getByName(permDefault));
                 perm.addParent("adminchat.channel.*", true);
                 read.addParent("adminchat.channel." + s, true);
                 send.addParent("adminchat.channel." + s, true);
