@@ -98,7 +98,11 @@ public class Channel {
 
         String formattedMessage = this.plugin.getFormatHelper().formatMessage(format, sender, message);
 
-        Bukkit.broadcast(formattedMessage, "adminchat.channel." + name + ".read");
+        for (CommandSender member : members) {
+            member.sendMessage(formattedMessage);
+        }
+
+        this.plugin.getLogger().info(formattedMessage);
 
     }
 
