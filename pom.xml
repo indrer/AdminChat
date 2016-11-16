@@ -5,6 +5,19 @@
   <artifactId>AdminChat</artifactId>
   <version>1.5.0</version>
   <name>Admin-Chat</name>
+
+  <profiles>
+    <profile>
+      <id>jenkins</id>
+      <activation>
+        <property>
+          <name>environment</name>
+          <value>jenkins</value>
+        </property>
+      </activation>
+      <version>${project.version}-jenkins-${BUILD_NUMBER}</version>
+    </profile>
+  </profiles>
   
   <repositories>
         <repository>
