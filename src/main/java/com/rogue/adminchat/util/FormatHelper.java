@@ -4,10 +4,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * This is placeholder documentation for the file.
- * <p>
- * Created by md678685 on 25/08/2016.
+ * A formatting helper class.
+ *
+ * @author MD678685
+ * @since 1.5.0
+ * @version 1.5.0
  */
+
+// TODO: REWORK THIS COMPLETELY
 public class FormatHelper {
 
     private Formatter formatter;
