@@ -50,8 +50,8 @@ import java.util.logging.Level;
  */
 public class ChannelManager {
 
-    private final Map<String, List<String>> mutes = new HashMap();
-    private final Map<String, Channel> channels = new ConcurrentHashMap();
+    private final Map<String, List<String>> mutes = new HashMap<String, List<String>>();
+    private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
     private final AdminChat plugin;
 
     public ChannelManager(AdminChat plugin) {
