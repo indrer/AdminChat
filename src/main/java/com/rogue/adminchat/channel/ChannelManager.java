@@ -23,6 +23,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
@@ -280,8 +281,10 @@ public class ChannelManager {
      * Adds passed player names to a mute list. Does not verify the names are
      * players.
      *
+     * Deprecated; use Channel#muteSender
+     *
      * @since 1.3.2
-     * @version 1.3.2
+     * @version 1.5.0
      *
      * @param channel Channel to mute in
      * @param names Names to mute
@@ -290,65 +293,39 @@ public class ChannelManager {
      * 
      * @return True if all names were successfully added.
      */
+    @Deprecated
     public void mute(String channel, String... names) throws ChannelNotFoundException {
-        if (channel != null) {
-            if (this.channels.get(channel) == null) {
-                throw new ChannelNotFoundException("Unknown channel: " + channel);
-            } else {
-                for (String name : names) {
-                    synchronized (this.mutes) {
-                        List<String> muted = this.mutes.remove(name);
-                        if (muted != null) {
-                            muted.add(channel);
-                            this.mutes.put(name, muted);
-                        } else {
-                            this.mutes.put(name, Arrays.asList(new String[]{channel}));
-                        }
-                    }
-                }
-            }
-        } else {
-            for (String name : names) {
-                synchronized (this.mutes) {
-                    this.mutes.put(name, null);
-                }
+        if (!this.isChannel(channel)) throw new ChannelNotFoundException("Unknown channel while muting", channel);
+        Channel pluginChannel = this.getChannel(channel);
+        for (String name : names) {
+            Player player = this.plugin.getServer().getPlayer(name);
+            if (!(player == null)) {
+                pluginChannel.muteSender(player);
             }
         }
     }
 
     /**
      * Unmutes a player within a channel, or globally
+     *
+     * Deprecated; use Channel#unmuteSender
      * 
      * @since 1.3.2
-     * @version 1.3.2
+     * @version 1.5.0
      * 
      * @param channel The channel to mute in, null if global
      * @param names Players to mute by name
      * 
      * @throws ChannelNotFoundException If no channel is found by the provided name
      */
+    @Deprecated
     public void unmute(String channel, String... names) throws ChannelNotFoundException {
-        if (channel != null) {
-            if (this.channels.get(channel) == null) {
-                throw new ChannelNotFoundException("Unknown Channel: " + channel);
-            } else {
-                for (String name : names) {
-                    synchronized (this.mutes) {
-                        List<String> muted = this.mutes.remove(name);
-                        if (muted != null) {
-                            muted.add(channel);
-                            this.mutes.put(name, muted);
-                        } else {
-                            this.mutes.put(name, Arrays.asList(channel));
-                        }
-                    }
-                }
-            }
-        } else {
-            for (String name : names) {
-                synchronized (this.mutes) {
-                    this.mutes.put(name, null);
-                }
+        if (!this.isChannel(channel)) throw new ChannelNotFoundException("Unknown channel", channel);
+        Channel pluginChannel = this.getChannel(channel);
+        for (String name : names) {
+            Player player = this.plugin.getServer().getPlayer(name);
+            if (!(player == null)) {
+                pluginChannel.unmuteSender(player);
             }
         }
     }
