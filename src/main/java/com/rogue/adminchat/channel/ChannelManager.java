@@ -265,6 +265,8 @@ public class ChannelManager {
         } catch (ChannelNotFoundException e) {
             this.plugin.communicate(sender, e.getMessage());
             this.plugin.getLogger().log(Level.SEVERE, "Could not find channel: " + channel, e);
+        } catch (SenderMutedException e) {
+            this.plugin.communicate(sender, e.getMessage());
         }
     }
 
