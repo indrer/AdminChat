@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * @since 1.0
  * @author 1Rogue
  * @author MD678685
- * @version 1.4.5
+ * @version 1.5.0
  */
 public final class AdminChat extends JavaPlugin {
 
@@ -140,12 +140,15 @@ public final class AdminChat extends JavaPlugin {
     /**
      * Sends a message to a player through AdminChat
      *
+     * Deprecated; use AdminChat#communicate(CommandSender, String) instead
+     *
      * @since 1.2.0
-     * @version 1.3.0
+     * @version 1.5.0
      *
      * @param player The player to send to
      * @param message The message to send
      */
+    @Deprecated
     public void communicate(String player, String message) {
         this.communicate(Bukkit.getPlayer(player), message);
     }
