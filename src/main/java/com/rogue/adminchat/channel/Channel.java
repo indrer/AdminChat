@@ -152,4 +152,28 @@ public class Channel {
         return (HashSet<CommandSender>) members.clone();
     }
 
+    /**
+     * Mute a sender in the channel.
+     * @param sender The sender to mute
+     * @since 1.5.0
+     * @version 1.5.0
+     */
+    public synchronized void muteSender(CommandSender sender) {
+        if (!mutedSenders.contains(sender)) {
+            mutedSenders.add(sender);
+        }
+    }
+
+    /**
+     * Unmute a sender in the channel.
+     * @param sender The sender to unmute
+     * @since 1.5.0
+     * @version 1.5.0
+     */
+    public synchronized void unmuteSender(CommandSender sender) {
+        if (mutedSenders.contains(sender)) {
+            mutedSenders.remove(sender);
+        }
+    }
+
 }
