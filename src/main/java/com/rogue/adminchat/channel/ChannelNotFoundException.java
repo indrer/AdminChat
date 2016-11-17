@@ -20,11 +20,19 @@ package com.rogue.adminchat.channel;
  *
  * @since 1.3.2
  * @author 1Rogue
- * @version 1.3.2
+ * @version 1.5.0
  */
 public class ChannelNotFoundException extends Exception {
-    
-    public ChannelNotFoundException(String message) {
+
+    public String channelName;
+
+    public ChannelNotFoundException(String message, String _channelName) {
         super(message);
+        channelName = _channelName;
+    }
+
+    @Deprecated
+    public ChannelNotFoundException(String message) {
+        this(message, null);
     }
 }
