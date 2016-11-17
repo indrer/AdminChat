@@ -99,18 +99,24 @@ public class ChannelManager {
                 Permission read = new Permission("adminchat.channel." + s + ".read");
                 Permission send = new Permission("adminchat.channel." + s + ".send");
                 Permission mute = new Permission("adminchat.channel." + s + ".mute");
+                Permission join = new Permission("adminchat.channel." + s + ".join");
+                Permission leave = new Permission("adminchat.channel." + s + ".leave");
                 perm.setDefault(PermissionDefault.getByName(permDefault));
                 perm.addParent("adminchat.channel.*", true);
-                read.addParent("adminchat.channel." + s, true);
-                send.addParent("adminchat.channel." + s, true);
-                mute.addParent("adminchat.mute." + s, true);
+                read.addParent(perm, true);
+                send.addParent(perm, true);
+                mute.addParent(perm, true);
                 mute.addParent("adminchat.muteall", true);
+                join.addParent(perm, true);
+                leave.addParent(perm, true);
                 try {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
                     Bukkit.getPluginManager().addPermission(read);
                     Bukkit.getPluginManager().addPermission(send);
                     Bukkit.getPluginManager().addPermission(mute);
+                    Bukkit.getPluginManager().addPermission(join);
+                    Bukkit.getPluginManager().addPermission(leave);
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }
