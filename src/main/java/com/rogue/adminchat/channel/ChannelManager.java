@@ -18,9 +18,11 @@ package com.rogue.adminchat.channel;
 
 import com.rogue.adminchat.AdminChat;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -51,7 +53,6 @@ import java.util.logging.Level;
  */
 public class ChannelManager {
 
-    private final Map<String, List<String>> mutes = new HashMap<String, List<String>>();
     private final Map<String, Channel> channels = new ConcurrentHashMap<String, Channel>();
     private final AdminChat plugin;
 
@@ -84,8 +85,7 @@ public class ChannelManager {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(chan);
         ConfigurationSection sect = yaml.getConfigurationSection("channels");
         if (sect == null) {
-            this.plugin.getLogger().severe("No channels found, disabling!");
-            Bukkit.getPluginManager().disablePlugin(this.plugin);
+            this.plugin.getLogger().severe("No channels found! AdminChat will not work until you add channels to plugins/AdminChat/channels.yml");
             return;
         }
         for (String s : sect.getKeys(false)) {
@@ -95,7 +95,7 @@ public class ChannelManager {
             permDefault = (permDefault != null ? permDefault : "op");
             if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
                 this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
-                this.channels.put(cmd, new Channel(plugin, s, cmd, format));
+                this.channels.put(s, new Channel(plugin, s, cmd, format));
                 Permission perm = new Permission("adminchat.channel." + s);
                 Permission read = new Permission("adminchat.channel." + s + ".read");
                 Permission send = new Permission("adminchat.channel." + s + ".send");
@@ -121,9 +121,9 @@ public class ChannelManager {
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }
+                registerCommand(cmd);
             }
         }
-        register();
     }
 
     /**
@@ -133,35 +133,18 @@ public class ChannelManager {
      * @since 1.3.0
      * @version 1.3.0
      */
-    private void register() {
-        SimpleCommandMap scm;
-        try {
-            Field f = SimplePluginManager.class.getDeclaredField("commandMap");
-            f.setAccessible(true);
-            synchronized (scm = (SimpleCommandMap) f.get(Bukkit.getPluginManager())) {
-                if (!this.channels.keySet().isEmpty()) {
-                    for (String s : this.channels.keySet()) {
-                        PluginCommand pc = this.getCommand(s, this.plugin);
-                        PluginCommand toggle = this.getCommand(s + "toggle", this.plugin);
-                        PluginCommand mute = this.getCommand(s + "mute", this.plugin);
-                        PluginCommand unmute = this.getCommand(s + "unmute", this.plugin);
-                        if (pc != null && toggle != null && mute != null && unmute != null) {
-                            scm.register("adminchat", pc);
-                            scm.register("adminchat", toggle);
-                            scm.register("adminchat", mute);
-                            scm.register("adminchat", unmute);
-                        }
-                    }
-                }
-            }
-        } catch (NoSuchFieldException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "commandMap field does not exist in SimplePluginManager!", ex);
-        } catch (SecurityException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "SecurityException accessing commandMap in SimplePluginManager!", ex);
-        } catch (IllegalArgumentException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "Bad arguments passed to register method in SimplePluginManager!", ex);
-        } catch (IllegalAccessException ex) {
-            this.plugin.getLogger().log(Level.SEVERE, "IllegalAccessException in SimplePluginManager!", ex);
+    private void registerCommand(String baseCommand) {
+        SimpleCommandMap map = (SimpleCommandMap) this.plugin.getServer().getPluginManager();
+
+        PluginCommand pc = this.getCommand(baseCommand, this.plugin);
+        PluginCommand toggle = this.getCommand(baseCommand + "toggle", this.plugin);
+        PluginCommand mute = this.getCommand(baseCommand + "mute", this.plugin);
+        PluginCommand unmute = this.getCommand(baseCommand + "unmute", this.plugin);
+        if (pc != null && toggle != null && mute != null && unmute != null) {
+            map.register("adminchat", pc);
+            map.register("adminchat", toggle);
+            map.register("adminchat", mute);
+            map.register("adminchat", unmute);
         }
     }
 
@@ -182,20 +165,19 @@ public class ChannelManager {
         try {
             Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
             c.setAccessible(true);
-
             command = c.newInstance(name, plugin);
         } catch (SecurityException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         } catch (IllegalArgumentException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         } catch (IllegalAccessException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         } catch (InstantiationException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         } catch (InvocationTargetException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         } catch (NoSuchMethodException e) {
-            this.plugin.getLogger().log(Level.SEVERE, null, e);
+            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
         }
 
         return command;
@@ -219,7 +201,7 @@ public class ChannelManager {
      * @since 1.3.0
      * @version 1.3.0
      *
-     * @param name The channel command
+     * @param name The channel name
      * 
      * @throws ChannelNotFoundException If no channel is found by the provided name
      * 
