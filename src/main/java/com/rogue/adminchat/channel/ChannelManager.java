@@ -128,7 +128,7 @@ public class ChannelManager {
 
     /**
      * Registers the channel commands with bukkit's command map dynamically. If
-     * a command already exists, it will be prefixed with a period.
+     * a command already exists, it will be prefixed with a "adminchat:".
      *
      * @since 1.3.0
      * @version 1.3.0
