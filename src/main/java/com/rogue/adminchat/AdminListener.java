@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.rogue.adminchat.channel.ChannelNotFoundException;
+import com.rogue.adminchat.channel.SenderMutedException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,7 +31,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
  *
  * @since 1.2.0
  * @author 1Rogue
- * @version 1.3.0
+ * @author MD678685
+ * @version 1.5.0
  */
 public class AdminListener implements Listener {
 
@@ -45,7 +47,7 @@ public class AdminListener implements Listener {
      * channels
      *
      * @since 1.2.0
-     * @version 1.3.0
+     * @version 1.5.0
      *
      * @param event AsyncPlayerChatEvent instance
      */
@@ -57,10 +59,13 @@ public class AdminListener implements Listener {
             String chan = toggled.get(name);
             try {
                 event.setCancelled(true);
-                this.plugin.getChannelManager().getChannel(chan).sendMessage(toggled.get(name), name, event.getMessage());
+                this.plugin.getChannelManager().getChannel(chan).sendMessage(event.getPlayer(), event.getMessage());
             } catch (ChannelNotFoundException e) {
                 this.plugin.communicate(event.getPlayer(), "Could not find the channel you were toggled in! This should not happen!");
                 this.plugin.getLogger().log(Level.SEVERE, "Could not find the channel " + name + " is toggled in! This should not happen!", e);
+            } catch (SenderMutedException e) {
+                this.plugin.communicate(event.getPlayer(), "You are muted in this channel!");
+                this.plugin.getLogger().info(name + " is muted in " + chan + " - message: " + event.getMessage());
             }
         }
     }
