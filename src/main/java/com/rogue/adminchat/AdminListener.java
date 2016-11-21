@@ -17,6 +17,9 @@
 package com.rogue.adminchat;
 
 import java.util.Map;
+import java.util.logging.Level;
+
+import com.rogue.adminchat.channel.ChannelNotFoundException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -52,9 +55,12 @@ public class AdminListener implements Listener {
         final String name = event.getPlayer().getName();
         synchronized (toggled = this.plugin.getCommandHandler().getToggled()) {
             String chan = toggled.get(name);
-            if (chan != null) {
+            try {
                 event.setCancelled(true);
-                plugin.getChannelManager().sendMessage(toggled.get(name), name, event.getMessage());
+                this.plugin.getChannelManager().getChannel(chan).sendMessage(toggled.get(name), name, event.getMessage());
+            } catch (ChannelNotFoundException e) {
+                this.plugin.communicate(event.getPlayer(), "Could not find the channel you were toggled in! This should not happen!");
+                this.plugin.getLogger().log(Level.SEVERE, "Could not find the channel " + name + " is toggled in! This should not happen!", e);
             }
         }
     }
@@ -63,7 +69,7 @@ public class AdminListener implements Listener {
      * Sends a notification to ops/players with all of the plugin's permissions
      *
      * @since 1.2.0
-     * @versino 1.2.1
+     * @version 1.2.1
      *
      * @param e The join event
      */
