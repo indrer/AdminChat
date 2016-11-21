@@ -78,7 +78,7 @@ public final class AdminChat extends JavaPlugin {
             this.getLogger().info("Update checking disabled!");
         }
 
-        this.formatHelper = new FormatHelper();
+        this.formatHelper = new FormatHelper(this);
 
         this.prefix = this.getConfig().getString("prefix");
 
