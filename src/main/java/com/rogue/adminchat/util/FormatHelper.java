@@ -145,7 +145,7 @@ public class FormatHelper {
             String formattedMessage = defaultFormatter.formatMessage(format, sender, message)
                     .replace("{PREFIX}", prefix)
                     .replace("{SUFFIX}", suffix)
-                    .replace("{PRIMARYGROUP}", group)
+                    .replace("{GROUP}", group)
                     .replace("{ALLGROUPS}", allGroups);
 
             return formattedMessage;
