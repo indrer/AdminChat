@@ -1,10 +1,14 @@
+# These are just some examples of channels. Edit these to your liking!
 channels:
   adminchat:
     command: 'ac'
     format: '&aADMIN: {NAME}: &c{MESSAGE}'
     permDefault: 'op'
-  main:
-    formatted-name: true
-    command: 'main'
-    format: '{PREFIX}{DISPLAYNAME}&f: {SUFFIX}{MESSAGE}'
-    permDefault: 'true'
+  modchat:
+    command: 'mc'
+    format: '{PREFIX} {DISPLAYNAME}: {MESSAGE}'
+    permDefault: 'op'
+  donatorchat:
+    command: 'dc'
+    format: 'Donator Chat - {GROUP} {DISPLAYNAME}'
+    permDefault: 'false'
