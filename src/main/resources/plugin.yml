@@ -2,7 +2,7 @@ main: com.rogue.adminchat.AdminChat
 name: Admin-Chat
 prefix: AdminChat
 description: Allows simple communication between admins
-version: ${project.version}
+version: ${version-name}
 authors: [MD678685, 1Rogue, h3lix]
 url: http://dev.bukkit.org/bukkit-plugins/adminchat
 permissions:
