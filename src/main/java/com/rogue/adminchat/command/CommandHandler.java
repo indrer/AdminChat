@@ -168,14 +168,15 @@ public class CommandHandler implements CommandExecutor {
      * Sets the command handler as the executor for channel commands
      *
      * @since 1.3.0
-     * @version 1.3.0
+     * @version 1.5.0
      */
     public void setExecs() {
         final Map<String, Channel> channels;
         synchronized (channels = plugin.getChannelManager().getChannels()) {
             for (String cmd : channels.keySet()) {
-                this.plugin.getCommand(cmd).setExecutor(this);
-                this.plugin.getCommand(cmd + "toggle").setExecutor(this);
+                for (CommandType type : CommandType.values()) {
+                    this.plugin.getCommand(cmd + type.getCommand()).setExecutor(this);
+                }
             }
             this.plugin.getCommand("adminchat").setExecutor(this);
         }
