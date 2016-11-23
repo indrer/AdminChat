@@ -58,14 +58,14 @@ public class CommandHandler implements CommandExecutor {
         synchronized (channels = manager.getChannels()) {
             ACCommand command = this.getCommand(commandLabel, args);
             if (command == null) {
-                this.plugin.communicate(sender.getName(), "Unknown command: &c" + commandLabel);
+                this.plugin.communicate(sender, "Unknown command: &c" + commandLabel);
             }
             String chanName;
             try {
                 chanName = manager.getChannel(command.getCommand()).getName();
             } catch (ChannelNotFoundException ex) {
                 this.plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-                this.plugin.communicate(sender.getName(), ex.getMessage());
+                this.plugin.communicate(sender, ex.getMessage());
                 return false;
             }
             Player target;
@@ -92,22 +92,22 @@ public class CommandHandler implements CommandExecutor {
                             String chan = this.toggled.get(sender.getName());
                             if (chan != null && commandLabel.equalsIgnoreCase(chan)) {
                                 this.toggled.remove(sender.getName());
-                                this.plugin.communicate((Player) sender, "Automatic chat disabled!");
+                                this.plugin.communicate(sender, "Automatic chat disabled!");
                             } else {
                                 this.toggled.put(sender.getName(), commandLabel);
-                                this.plugin.communicate((Player) sender, "Now chatting in channel: '" + channel + "'!");
+                                this.plugin.communicate(sender, "Now chatting in channel: '" + channel + "'!");
                             }
                         }
                     }
                     break;
                 case MUTE:
                     if (args.length < 2) {
-                        this.plugin.communicate(sender.getName(), "Invalid arguments.");
-                        this.plugin.communicate(sender.getName(), "Usage: &c/<chan>mute <Player> <time> [channel]");
+                        this.plugin.communicate(sender, "Invalid arguments.");
+                        this.plugin.communicate(sender, "Usage: &c/<chan>mute <Player> <time> [channel]");
                     }
                     target = this.plugin.getServer().getPlayer(args[0]);
                     if (target == null) {
-                        this.plugin.communicate(sender.getName(), "Unknown player: &c" + args[0]);
+                        this.plugin.communicate(sender, "Unknown player: &c" + args[0]);
                         return true;
                     }
                     long time = Long.parseLong(args[1]);
@@ -119,19 +119,19 @@ public class CommandHandler implements CommandExecutor {
                                 try {
                                     manager.unmute(channel, name);
                                 } catch (ChannelNotFoundException ex) {
-                                    plugin.communicate(sender.getName(), ex.getMessage());
+                                    plugin.communicate(sender, ex.getMessage());
                                 }
                             }
                         }, time);
                     } catch (ChannelNotFoundException ex) {
-                        this.plugin.communicate(sender.getName(), ex.getMessage());
+                        this.plugin.communicate(sender, ex.getMessage());
                     }
                     break;
                 case UNMUTE:
                     if (args.length == 1) {
                         target = Bukkit.getPlayer(args[0]);
                         if (target == null) {
-                            this.plugin.communicate(sender.getName(), "Unknown Player: &c" + args[0]);
+                            this.plugin.communicate(sender, "Unknown Player: &c" + args[0]);
                             return true;
                         }
                         try {
@@ -140,12 +140,12 @@ public class CommandHandler implements CommandExecutor {
                             Logger.getLogger(CommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        this.plugin.communicate(sender.getName(), "Invalid arguments.");
-                        this.plugin.communicate(sender.getName(), "Usage: &c/<chan>mute <Player> <time> [channel]");
+                        this.plugin.communicate(sender, "Invalid arguments.");
+                        this.plugin.communicate(sender, "Usage: &c/<chan>mute <Player> <time> [channel]");
                     }
                     break;
                 default:
-                    this.plugin.communicate(sender.getName(), "Unknown Command!");
+                    this.plugin.communicate(sender, "Unknown Command!");
                     break;
             }
         }
