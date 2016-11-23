@@ -189,20 +189,18 @@ public class CommandHandler implements CommandExecutor {
      */
     private ACCommand getCommand(String cmd, String[] args) {
         String command;
-        CommandType type;
+        CommandType type = null;
         if (cmd.endsWith("toggle") || cmd.endsWith("unmute")) {
             command = cmd.substring(0, cmd.length() - 6);
-            type = CommandType.getCommand(cmd.substring(command.length()));
         } else if (cmd.endsWith("leave")) {
             command = cmd.substring(0, cmd.length() - 5);
-            type = CommandType.getCommand(cmd.substring(command.length()));
         } else if (cmd.endsWith("mute") || cmd.endsWith("join")) {
             command = cmd.substring(0, cmd.length() - 4);
-            type = CommandType.getCommand(cmd.substring(command.length()));
         } else {
             command = cmd;
-            type = CommandType.NORMAL;
+            if (args.length < 1) type = CommandType.TOGGLE;
         }
+        if (type != null) type = CommandType.getCommand(cmd.substring(command.length()));
         return new ACCommand(command, type);
     }
 }
