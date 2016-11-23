@@ -23,7 +23,7 @@ package com.rogue.adminchat.command;
  */
 public enum CommandType {
     
-    NORMAL("normal"),
+    NORMAL("normal", ""),
     TOGGLE("toggle"),
     MUTE("mute"),
     UNMUTE("unmute"),
@@ -44,9 +44,13 @@ public enum CommandType {
         }
         return null;
     }
-    
+
     @Override
     public String toString() {
         return this.name[0];
+    }
+
+    public String getCommand() {
+        return this.name[-1];
     }
 }
