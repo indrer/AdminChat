@@ -26,14 +26,17 @@ public enum CommandType {
     NORMAL("normal"),
     TOGGLE("toggle"),
     MUTE("mute"),
-    UNMUTE("unmute");
-    private final String name;
+    UNMUTE("unmute"),
+    JOIN("join"),
+    LEAVE("leave");
+
+    private final String[] name;
     
-    private CommandType(String name) {
+    CommandType(String... name) {
         this.name = name;
     }
     
-    public CommandType getCommand(String type) {
+    public static CommandType getCommand(String type) {
         for (CommandType enu : CommandType.values()) {
             if (enu.name().equals(type.toLowerCase())) {
                 return enu;
@@ -44,6 +47,6 @@ public enum CommandType {
     
     @Override
     public String toString() {
-        return this.name;
+        return this.name[0];
     }
 }

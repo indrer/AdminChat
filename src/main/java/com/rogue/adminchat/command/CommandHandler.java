@@ -188,29 +188,21 @@ public class CommandHandler implements CommandExecutor {
      * @return The {@link ACCommand} version of the command
      */
     private ACCommand getCommand(String cmd, String[] args) {
-        if (cmd.endsWith("toggle")) {
-            String command = cmd.substring(0, cmd.length() - 6);
-            if (this.plugin.getChannelManager().isChannel(command)) {
-                return new ACCommand(command, CommandType.TOGGLE);
-            }
-        } else if (cmd.endsWith("unmute")) {
-            String command = cmd.substring(0, cmd.length() - 6);
-            if (this.plugin.getChannelManager().isChannel(command)) {
-                return new ACCommand(command, CommandType.UNMUTE);
-            }
-        } if (cmd.endsWith("mute")) {
-            String command = cmd.substring(0, cmd.length() - 4);
-            if (this.plugin.getChannelManager().isChannel(command)) {
-                return new ACCommand(command, CommandType.MUTE);
-            }
+        String command;
+        CommandType type;
+        if (cmd.endsWith("toggle") || cmd.endsWith("unmute")) {
+            command = cmd.substring(0, cmd.length() - 6);
+            type = CommandType.getCommand(cmd.substring(command.length()));
+        } else if (cmd.endsWith("leave")) {
+            command = cmd.substring(0, cmd.length() - 5);
+            type = CommandType.getCommand(cmd.substring(command.length()));
+        } else if (cmd.endsWith("mute") || cmd.endsWith("join")) {
+            command = cmd.substring(0, cmd.length() - 4);
+            type = CommandType.getCommand(cmd.substring(command.length()));
+        } else {
+            command = cmd;
+            type = CommandType.NORMAL;
         }
-        if (this.plugin.getChannelManager().isChannel(cmd)) {
-            if (args.length > 0) {
-                return new ACCommand(cmd, CommandType.NORMAL);
-            } else {
-                return new ACCommand(cmd, CommandType.TOGGLE);
-            }
-        }
-        return null;
+        return new ACCommand(command, type);
     }
 }
