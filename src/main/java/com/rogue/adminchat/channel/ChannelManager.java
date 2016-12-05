@@ -102,6 +102,7 @@ public class ChannelManager {
                 Permission mute = new Permission("adminchat.channel." + s + ".mute");
                 Permission join = new Permission("adminchat.channel." + s + ".join");
                 Permission leave = new Permission("adminchat.channel." + s + ".leave");
+                Permission autojoin = new Permission("adminchat.channel." + s + ".autojoin");
                 perm.setDefault(PermissionDefault.getByName(permDefault));
                 perm.addParent("adminchat.channel.*", true);
                 read.addParent(perm, true);
@@ -110,6 +111,7 @@ public class ChannelManager {
                 mute.addParent("adminchat.muteall", true);
                 join.addParent(perm, true);
                 leave.addParent(perm, true);
+                autojoin.addParent(perm, true);
                 try {
                     this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
                     Bukkit.getPluginManager().addPermission(perm);
@@ -118,6 +120,7 @@ public class ChannelManager {
                     Bukkit.getPluginManager().addPermission(mute);
                     Bukkit.getPluginManager().addPermission(join);
                     Bukkit.getPluginManager().addPermission(leave);
+                    Bukkit.getPluginManager().addPermission(autojoin);
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
                 }

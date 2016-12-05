@@ -17,8 +17,11 @@
 package com.rogue.adminchat;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
+import com.rogue.adminchat.channel.Channel;
+import com.rogue.adminchat.channel.ChannelManager;
 import com.rogue.adminchat.channel.ChannelNotFoundException;
 import com.rogue.adminchat.channel.SenderMutedException;
 import org.bukkit.event.EventHandler;
@@ -26,6 +29,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
@@ -74,7 +78,7 @@ public class AdminListener implements Listener {
      * Sends a notification to ops/players with all of the plugin's permissions
      *
      * @since 1.2.0
-     * @version 1.2.1
+     * @version 1.5.0
      *
      * @param e The join event
      */
@@ -83,6 +87,26 @@ public class AdminListener implements Listener {
         if (e.getPlayer().hasPermission("adminchat.updatenotice")) {
             if (plugin.isOutOfDate()) {
                 plugin.communicate(e.getPlayer(), "An update is available for Adminchat!");
+            }
+        }
+        Map<String, Channel> channels = this.plugin.getChannelManager().getChannels();
+        for (String channelName : channels.keySet()) {
+            if (e.getPlayer().hasPermission("adminchat.channel." + channelName + ".autojoin")) {
+                channels.get(channelName).addMember(e.getPlayer());
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        Map<String, Channel> channels = this.plugin.getChannelManager().getChannels();
+        for (String channelName : channels.keySet()) {
+            Channel channel = channels.get(channelName);
+            if (channel.getMembers().contains(e.getPlayer())) {
+                channel.removeMember(e.getPlayer());
+            }
+            if (channel.isMuted(e.getPlayer())) {
+                channel.unmuteSender(e.getPlayer());
             }
         }
     }
