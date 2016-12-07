@@ -1,40 +1,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.rogue</groupId>
-  <artifactId>AdminChat</artifactId>
-  <version>1.5.0</version>
-  <name>Admin-Chat</name>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.rogue</groupId>
+    <artifactId>AdminChat</artifactId>
+    <version>1.5.0</version>
+    <name>Admin-Chat</name>
 
-  <properties>
-    <version-name>${project.version}-local</version-name>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <version-name>${project.version}-local</version-name>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <profiles>
-    <profile>
-      <id>jenkins</id>
-      <activation>
-        <property>
-          <name>environment</name>
-          <value>jenkins</value>
-        </property>
-      </activation>
-      <properties>
-        <version-name>${project.version}-jenkins-${env.BUILD_NUMBER}</version-name>
-      </properties>
-    </profile>
-  </profiles>
-  
-  <repositories>
+    <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>jenkins</value>
+                </property>
+            </activation>
+            <properties>
+                <version-name>${project.version}-jenkins-${env.BUILD_NUMBER}</version-name>
+            </properties>
+        </profile>
+    </profiles>
+
+    <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
-      <repository>
-          <id>vault-repo</id>
-          <url>http://nexus.hc.to/content/repositories/pub_releases</url>
-      </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
     <licenses>
         <license>
@@ -43,9 +43,9 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-  <packaging>jar</packaging>
-  
-  <build>
+    <packaging>jar</packaging>
+
+    <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -58,21 +58,33 @@
             </resource>
         </resources>
         <finalName>${project.name}-${version-name}</finalName>
-  </build>
-  
-  <dependencies>
-      <dependency>
-          <groupId>org.bukkit</groupId>
-          <artifactId>bukkit</artifactId>
-          <version>1.8-R0.1-SNAPSHOT</version>
-          <type>jar</type>
-      </dependency>
-      <dependency>
-          <groupId>net.milkbowl.vault</groupId>
-          <artifactId>VaultAPI</artifactId>
-          <version>1.6</version>
-          <scope>provided</scope>
-      </dependency>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.2.29</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-  
+
 </project>
