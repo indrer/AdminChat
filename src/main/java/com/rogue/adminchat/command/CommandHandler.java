@@ -106,7 +106,6 @@ public class CommandHandler implements CommandExecutor {
                     manager.getChannel(channel).muteSender(target);
                     plugin.communicate(target, "You have been muted in " + channel + ".");
                     plugin.communicate(sender, target.getName() + " was muted in " + channel + ".");
-                    this.plugin.communicate();
                     if (time > 0) {
                         this.plugin.getExecutiveManager().runAsyncTask(new Runnable() {
                             public void run() {
