@@ -1,9 +1,8 @@
-package com.rogue.adminchat.command.channel;
+package com.rogue.adminchat.command;
 
 import com.rogue.adminchat.AdminChat;
 import com.rogue.adminchat.channel.Channel;
 import com.rogue.adminchat.channel.SenderMutedException;
-import com.rogue.adminchat.command.CommandType;
 import org.bukkit.command.CommandSender;
 
 /**
