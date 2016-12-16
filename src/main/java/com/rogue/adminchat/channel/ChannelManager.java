@@ -29,6 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
 
 import java.io.File;
@@ -93,40 +94,45 @@ public class ChannelManager {
             String cmd = yaml.getString("channels." + s + ".command");
             String permDefault = yaml.getString("channels." + s + ".permDefault");
             permDefault = (permDefault != null ? permDefault : "op");
-            if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
-                this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
-                this.channels.put(s, new Channel(plugin, s, cmd, format));
-                Permission perm = new Permission("adminchat.channel." + s);
-                Permission read = new Permission("adminchat.channel." + s + ".read");
-                Permission send = new Permission("adminchat.channel." + s + ".send");
-                Permission mute = new Permission("adminchat.channel." + s + ".mute");
-                Permission join = new Permission("adminchat.channel." + s + ".join");
-                Permission leave = new Permission("adminchat.channel." + s + ".leave");
-                Permission autojoin = new Permission("adminchat.channel." + s + ".autojoin");
-                perm.setDefault(PermissionDefault.getByName(permDefault));
-                perm.addParent("adminchat.channel.*", true);
-                read.addParent(perm, true);
-                send.addParent(perm, true);
-                mute.addParent(perm, true);
-                mute.addParent("adminchat.muteall", true);
-                join.addParent(perm, true);
-                leave.addParent(perm, true);
-                autojoin.addParent(perm, true);
-                try {
-                    this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
-                    Bukkit.getPluginManager().addPermission(perm);
-                    Bukkit.getPluginManager().addPermission(read);
-                    Bukkit.getPluginManager().addPermission(send);
-                    Bukkit.getPluginManager().addPermission(mute);
-                    Bukkit.getPluginManager().addPermission(join);
-                    Bukkit.getPluginManager().addPermission(leave);
-                    Bukkit.getPluginManager().addPermission(autojoin);
-                } catch (IllegalArgumentException e) {
-                    this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
-                }
-                registerCommand(cmd);
-            }
+            registerChannel(s, cmd, format, permDefault);
         }
+    }
+
+    protected void registerChannel(String name, String cmd, String format, String permDefault) {
+        if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
+        this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
+        this.channels.put(name, new Channel(plugin, name, cmd, format));
+        Permission perm = new Permission("adminchat.channel." + name);
+        Permission read = new Permission("adminchat.channel." + name + ".read");
+        Permission send = new Permission("adminchat.channel." + name + ".send");
+        Permission mute = new Permission("adminchat.channel." + name + ".mute");
+        Permission join = new Permission("adminchat.channel." + name + ".join");
+        Permission leave = new Permission("adminchat.channel." + name + ".leave");
+        Permission autojoin = new Permission("adminchat.channel." + name + ".autojoin");
+        perm.setDefault(PermissionDefault.getByName(permDefault));
+        perm.addParent("adminchat.channel.*", true);
+        read.addParent(perm, true);
+        send.addParent(perm, true);
+        mute.addParent(perm, true);
+        mute.addParent("adminchat.muteall", true);
+        join.addParent(perm, true);
+        leave.addParent(perm, true);
+        autojoin.addParent(perm, true);
+        try {
+            this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
+            PluginManager m = Bukkit.getPluginManager();
+            m.addPermission(perm);
+            m.addPermission(read);
+            m.addPermission(send);
+            m.addPermission(mute);
+            m.addPermission(join);
+            m.addPermission(leave);
+            m.addPermission(autojoin);
+        } catch (IllegalArgumentException e) {
+            this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
+        }
+        registerCommand(cmd);
+    }
     }
 
     /**
@@ -134,7 +140,7 @@ public class ChannelManager {
      * a command already exists, it will be prefixed with a "adminchat:".
      *
      * @since 1.3.0
-     * @version 1.3.0
+     * @version 1.5.0
      */
     private void registerCommand(String baseCommand) {
         SimpleCommandMap map = (SimpleCommandMap) this.plugin.getServer().getPluginManager();
@@ -215,7 +221,7 @@ public class ChannelManager {
         if (chan != null) {
             return chan;
         } else {
-            throw new ChannelNotFoundException("Unknown Channel: &c" + name);
+            throw new ChannelNotFoundException("Unknown Channel: &c" + name, name);
         }
     }
     
