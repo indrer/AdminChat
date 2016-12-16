@@ -27,5 +27,5 @@ permissions:
 commands:
   adminchat:
     description: AdminChat's main command
-    aliases: [adminchatmanage, acm]
+    aliases: [adminchatmanage, acm, channelmanager, chm]
     permission: adminchat.*
