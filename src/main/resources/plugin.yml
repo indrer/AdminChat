@@ -4,14 +4,28 @@ prefix: AdminChat
 description: Allows simple communication between admins
 version: ${version-name}
 authors: [MD678685, 1Rogue, h3lix]
-url: http://dev.bukkit.org/bukkit-plugins/adminchat
+softdepend: [Vault]
+website: http://dev.bukkit.org/bukkit-plugins/adminchat
 permissions:
   adminchat.*:
-    default: OP
+    default: false
+    description: Access to all AdminChat commands and channels
     children:
     - adminchat.channel.*
     - adminchat.reload
     - adminchat.help
+  adminchat.channel.*:
+    default: false
+    description: Access to all channels
+  adminchat.reload:
+    default: OP
+    description: Ability to reload the plugin
+  adminchat.help:
+    default: OP
+    description: Get help
+
 commands:
   adminchat:
-    description: Adminchat's main command interface
+    description: AdminChat's main command
+    aliases: [adminchatmanage, acm]
+    permission: adminchat.*
