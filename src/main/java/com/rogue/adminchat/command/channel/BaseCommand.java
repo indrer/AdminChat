@@ -14,7 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.rogue.adminchat.command;
+package com.rogue.adminchat.command.channel;
+
+import com.rogue.adminchat.AdminChat;
+import com.rogue.adminchat.channel.Channel;
+import com.rogue.adminchat.command.CommandType;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -22,14 +29,19 @@ package com.rogue.adminchat.command;
  * @author 1Rogue
  * @version 1.3.2
  */
-public class ACCommand {
+public abstract class BaseCommand extends Command implements PluginIdentifiableCommand {
     
-    private final String command;
-    private final CommandType type;
+    protected final String command;
+    protected final CommandType type;
+    protected final AdminChat plugin;
+    protected final Channel channel;
     
-    public ACCommand(String command, CommandType type) {
+    public BaseCommand(String command, CommandType type, Channel channel, AdminChat plugin) {
+        super(command);
         this.command = command;
         this.type = type;
+        this.plugin = plugin;
+        this.channel = channel;
     }
     
     public String getCommand() {
@@ -38,5 +50,14 @@ public class ACCommand {
 
     public CommandType getType() {
         return this.type;
+    }
+
+    /**
+     * Gets the owner of this PluginIdentifiableCommand.
+     *
+     * @return Plugin that owns this PluginIdentifiableCommand.
+     */
+    public Plugin getPlugin() {
+        return plugin;
     }
 }

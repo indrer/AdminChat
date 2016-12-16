@@ -17,7 +17,6 @@
 package com.rogue.adminchat;
 
 import com.rogue.adminchat.channel.ChannelManager;
-import com.rogue.adminchat.command.CommandHandler;
 import com.rogue.adminchat.executables.ExecutiveManager;
 import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
@@ -44,10 +43,8 @@ public final class AdminChat extends JavaPlugin {
 
     private AdminListener listener;
     private ChannelManager cmanager;
-    private CommandHandler chandle;
     private ExecutiveManager emanager;
     private boolean isUpdate = false;
-    private boolean globalMute = false;
     private String prefix;
     private FormatHelper formatHelper;
 
@@ -82,17 +79,12 @@ public final class AdminChat extends JavaPlugin {
 
         this.prefix = this.getConfig().getString("prefix");
 
-        this.getLogger().info("Enabling Command Handler...");
-        this.chandle = new CommandHandler(this);
-
         this.getLogger().info("Enabling Channel Manager...");
         this.cmanager = new ChannelManager(this);
 
         this.getLogger().info("Enabling Listener...");
         this.listener = new AdminListener(this);
         Bukkit.getPluginManager().registerEvents(this.listener, this);
-
-        this.chandle.setExecs();
     }
 
     @Override
@@ -114,7 +106,6 @@ public final class AdminChat extends JavaPlugin {
             this.getLogger().log(Level.SEVERE, null, ex);
         }
         listener = null;
-        chandle = null;
         cmanager = null;
         isUpdate = false;
         this.onLoad();
@@ -201,10 +192,11 @@ public final class AdminChat extends JavaPlugin {
      *
      * @return Command Handler class for AdminChat
      */
+/*
     public CommandHandler getCommandHandler() {
         return this.chandle;
     }
-    
+*/
     /**
      * Gets the scheduler for plugin tasks
      * 
@@ -234,7 +226,10 @@ public final class AdminChat extends JavaPlugin {
      * 
      * @param mute TRue to mute all, false otherwise
      */
+    /*
     public void setGlobalMute(boolean mute) {
         this.globalMute = mute;
     }
+    */
 }
+

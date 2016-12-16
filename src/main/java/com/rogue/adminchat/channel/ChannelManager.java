@@ -17,6 +17,7 @@
 package com.rogue.adminchat.channel;
 
 import com.rogue.adminchat.AdminChat;
+import com.rogue.adminchat.command.channel.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -47,10 +48,10 @@ import java.util.logging.Level;
 /**
  * Class for managing chat channels
  *
- * @since 1.3.0
  * @author 1Rogue
  * @author MD678685
  * @version 1.5.0
+ * @since 1.3.0
  */
 public class ChannelManager {
 
@@ -70,10 +71,9 @@ public class ChannelManager {
      * Gets the channel configurations from the channels.yml file, or loads a
      * new one if it does not exist. Also registers appropriate permissions
      *
-     * @since 1.3.0
-     * @version 1.3.1
-     *
      * @throws IOException When file is not readable
+     * @version 1.3.1
+     * @since 1.3.0
      */
     private void setup() throws IOException {
         if (this.plugin.getDataFolder().exists()) {
@@ -100,105 +100,74 @@ public class ChannelManager {
 
     protected void registerChannel(String name, String cmd, String format, String permDefault) {
         if (format != null && cmd != null && !cmd.equalsIgnoreCase("adminchat")) {
-        this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
-        this.channels.put(name, new Channel(plugin, name, cmd, format));
-        Permission perm = new Permission("adminchat.channel." + name);
-        Permission read = new Permission("adminchat.channel." + name + ".read");
-        Permission send = new Permission("adminchat.channel." + name + ".send");
-        Permission mute = new Permission("adminchat.channel." + name + ".mute");
-        Permission join = new Permission("adminchat.channel." + name + ".join");
-        Permission leave = new Permission("adminchat.channel." + name + ".leave");
-        Permission autojoin = new Permission("adminchat.channel." + name + ".autojoin");
-        perm.setDefault(PermissionDefault.getByName(permDefault));
-        perm.addParent("adminchat.channel.*", true);
-        read.addParent(perm, true);
-        send.addParent(perm, true);
-        mute.addParent(perm, true);
-        mute.addParent("adminchat.muteall", true);
-        join.addParent(perm, true);
-        leave.addParent(perm, true);
-        autojoin.addParent(perm, true);
-        try {
-            this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
-            PluginManager m = Bukkit.getPluginManager();
-            m.addPermission(perm);
-            m.addPermission(read);
-            m.addPermission(send);
-            m.addPermission(mute);
-            m.addPermission(join);
-            m.addPermission(leave);
-            m.addPermission(autojoin);
-        } catch (IllegalArgumentException e) {
-            this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
+            this.plugin.getLogger().log(Level.CONFIG, "Adding command {0}!", cmd);
+            Channel channel = new Channel(plugin, name, cmd, format);
+            this.channels.put(name, channel);
+            Permission perm = new Permission("adminchat.channel." + name);
+            Permission read = new Permission("adminchat.channel." + name + ".read");
+            Permission send = new Permission("adminchat.channel." + name + ".send");
+            Permission mute = new Permission("adminchat.channel." + name + ".mute");
+            Permission join = new Permission("adminchat.channel." + name + ".join");
+            Permission leave = new Permission("adminchat.channel." + name + ".leave");
+            Permission autojoin = new Permission("adminchat.channel." + name + ".autojoin");
+            perm.setDefault(PermissionDefault.getByName(permDefault));
+            perm.addParent("adminchat.channel.*", true);
+            read.addParent(perm, true);
+            send.addParent(perm, true);
+            mute.addParent(perm, true);
+            mute.addParent("adminchat.muteall", true);
+            join.addParent(perm, true);
+            leave.addParent(perm, true);
+            autojoin.addParent(perm, true);
+            try {
+                this.plugin.getLogger().log(Level.CONFIG, "Registering {0}", perm.getName());
+                PluginManager m = Bukkit.getPluginManager();
+                m.addPermission(perm);
+                m.addPermission(read);
+                m.addPermission(send);
+                m.addPermission(mute);
+                m.addPermission(join);
+                m.addPermission(leave);
+                m.addPermission(autojoin);
+            } catch (IllegalArgumentException e) {
+                this.plugin.getLogger().log(Level.WARNING, "The permission {0} is already registered!", perm.getName());
+            }
+            registerCommand(cmd, channel);
         }
-        registerCommand(cmd);
-    }
     }
 
     /**
      * Registers the channel commands with bukkit's command map dynamically. If
      * a command already exists, it will be prefixed with a "adminchat:".
      *
-     * @since 1.3.0
      * @version 1.5.0
+     * @since 1.3.0
      */
-    private void registerCommand(String baseCommand) {
+    private void registerCommand(String baseCommand, Channel channel) {
         SimpleCommandMap map = (SimpleCommandMap) this.plugin.getServer().getPluginManager();
 
-        PluginCommand pc = this.getCommand(baseCommand, this.plugin);
-        PluginCommand toggle = this.getCommand(baseCommand + "toggle", this.plugin);
-        PluginCommand mute = this.getCommand(baseCommand + "mute", this.plugin);
-        PluginCommand unmute = this.getCommand(baseCommand + "unmute", this.plugin);
+        BaseCommand pc = getCommand(baseCommand, channel, this.plugin);
+        BaseCommand toggle = getCommand(baseCommand + "toggle", channel, this.plugin);
+        BaseCommand mute = getCommand(baseCommand + "mute", channel, this.plugin);
+        BaseCommand unmute = getCommand(baseCommand + "unmute", channel, this.plugin);
+        BaseCommand join = getCommand(baseCommand + "join", channel, this.plugin);
+        BaseCommand leave = getCommand(baseCommand + "leave", channel, this.plugin);
         if (pc != null && toggle != null && mute != null && unmute != null) {
             map.register("adminchat", pc);
             map.register("adminchat", toggle);
             map.register("adminchat", mute);
             map.register("adminchat", unmute);
+            map.register("adminchat", join);
+            map.register("adminchat", leave);
         }
-    }
-
-    /**
-     * Gets a PluginCommand object from bukkit
-     *
-     * @since 1.3.0
-     * @version 1.3.0
-     *
-     * @param name Command Label
-     * @param plugin Plugin instance
-     * 
-     * @return New PluginCommand object, or null upon an exception
-     */
-    private PluginCommand getCommand(String name, Plugin plugin) {
-        PluginCommand command = null;
-
-        try {
-            Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-            c.setAccessible(true);
-            command = c.newInstance(name, plugin);
-        } catch (SecurityException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        } catch (IllegalArgumentException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        } catch (IllegalAccessException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        } catch (InstantiationException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        } catch (InvocationTargetException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        } catch (NoSuchMethodException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not create " + name + " command", e);
-        }
-
-        return command;
     }
 
     /**
      * Returns a map of the current channels, with the command as their key
      *
-     * @since 1.3.0
-     * @version 1.3.0
-     *
      * @return A map of the channels
+     * @version 1.3.0
+     * @since 1.3.0
      */
     public Map<String, Channel> getChannels() {
         return this.channels;
@@ -207,14 +176,11 @@ public class ChannelManager {
     /**
      * Returns a Channel by a requested key. This method is thread-safe.
      *
-     * @since 1.3.0
-     * @version 1.3.0
-     *
      * @param name The channel name
-     * 
-     * @throws ChannelNotFoundException If no channel is found by the provided name
-     * 
      * @return The channel object, null if channel does not exist
+     * @throws ChannelNotFoundException If no channel is found by the provided name
+     * @version 1.3.0
+     * @since 1.3.0
      */
     public synchronized Channel getChannel(String name) throws ChannelNotFoundException {
         Channel chan = this.channels.get(name);
@@ -224,15 +190,14 @@ public class ChannelManager {
             throw new ChannelNotFoundException("Unknown Channel: &c" + name, name);
         }
     }
-    
+
     /**
      * Checks if there is a channel by the command name
-     * 
-     * @since 1.3.2
-     * @version 1.3.2
-     * 
+     *
      * @param name The command used to call the channel
      * @return True if exists, false otherwise
+     * @version 1.3.2
+     * @since 1.3.2
      */
     public synchronized boolean isChannel(String name) {
         return this.channels.containsKey(name);
@@ -240,15 +205,14 @@ public class ChannelManager {
 
     /**
      * Deprecated - use Channel#isMuted instead.
-     *
+     * <p>
      * Parses the format string and sends it to players
      *
-     * @since 1.2.0
-     * @version 1.4.3
-     *
      * @param channel The channel to send to, based on command
-     * @param name The user sending the message
+     * @param name    The user sending the message
      * @param message The message to send to others in the channel
+     * @version 1.4.3
+     * @since 1.2.0
      */
     @Deprecated
     public void sendMessage(String channel, String name, String message) {
@@ -271,18 +235,15 @@ public class ChannelManager {
     /**
      * Adds passed player names to a mute list. Does not verify the names are
      * players.
-     *
+     * <p>
      * Deprecated; use Channel#muteSender
      *
-     * @since 1.3.2
-     * @version 1.5.0
-     *
      * @param channel Channel to mute in
-     * @param names Names to mute
-     * 
-     * @throws ChannelNotFoundException If no channel is found by the provided name
-     * 
+     * @param names   Names to mute
      * @return True if all names were successfully added.
+     * @throws ChannelNotFoundException If no channel is found by the provided name
+     * @version 1.5.0
+     * @since 1.3.2
      */
     @Deprecated
     public void mute(String channel, String... names) throws ChannelNotFoundException {
@@ -298,16 +259,14 @@ public class ChannelManager {
 
     /**
      * Unmutes a player within a channel, or globally
-     *
+     * <p>
      * Deprecated; use Channel#unmuteSender
-     * 
-     * @since 1.3.2
-     * @version 1.5.0
-     * 
+     *
      * @param channel The channel to mute in, null if global
-     * @param names Players to mute by name
-     * 
+     * @param names   Players to mute by name
      * @throws ChannelNotFoundException If no channel is found by the provided name
+     * @version 1.5.0
+     * @since 1.3.2
      */
     @Deprecated
     public void unmute(String channel, String... names) throws ChannelNotFoundException {
@@ -323,15 +282,13 @@ public class ChannelManager {
 
     /**
      * Deprecated - use Channel#isMuted instead.
-     *
+     * <p>
      * Returns whether or not a player is muted in a channel
      *
-     * @vesion 1.5.0
-     *
-     * @param name The name to check
+     * @param name    The name to check
      * @param channel The channel to check against
-     * 
      * @return True if muted in the channel, false otherwise
+     * @vesion 1.5.0
      */
     @Deprecated
     public synchronized boolean isMuted(String name, String channel) {
@@ -342,5 +299,37 @@ public class ChannelManager {
             isMuted = false;
         }
         return isMuted;
+    }
+
+    /**
+     * Creates a new command class for a provided command name
+     *
+     * @param cmd The command to try against
+     * @return The {@link BaseCommand} version of the command
+     */
+    private static BaseCommand getCommand(String cmd, Channel channel, AdminChat plugin) {
+        String commandLabel;
+        BaseCommand command;
+        if (cmd.endsWith("unmute")) {
+            commandLabel = cmd.substring(0, cmd.length() - 6);
+            command = new UnmuteCommand(cmd, channel, plugin);
+        } else if (cmd.endsWith("toggle")) {
+            commandLabel = cmd.substring(0, cmd.length() - 6);
+            command = new ToggleCommand(cmd, channel, plugin);
+        } else if (cmd.endsWith("leave")) {
+            commandLabel = cmd.substring(0, cmd.length() - 5);
+            command = new LeaveCommand(cmd, channel, plugin);
+        } else if (cmd.endsWith("mute")) {
+            commandLabel = cmd.substring(0, cmd.length() - 4);
+            command = new MuteCommand(cmd, channel, plugin);
+        } else if (cmd.endsWith("join")) {
+            commandLabel = cmd.substring(0, cmd.length() - 4);
+            command = new JoinCommand(cmd, channel, plugin);
+        } else {
+            commandLabel = cmd;
+            command = new SendCommand(cmd, channel, plugin);
+        }
+
+        return command;
     }
 }
