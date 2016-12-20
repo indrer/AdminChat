@@ -17,14 +17,18 @@
 package com.rogue.adminchat;
 
 import com.rogue.adminchat.channel.ChannelManager;
+import com.rogue.adminchat.command.MainCommand;
 import com.rogue.adminchat.executables.ExecutiveManager;
 import com.rogue.adminchat.metrics.Metrics;
 import com.rogue.adminchat.runnable.UpdateRunnable;
 import com.rogue.adminchat.util.FormatHelper;
+import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -85,6 +89,8 @@ public final class AdminChat extends JavaPlugin {
         this.getLogger().info("Enabling Listener...");
         this.listener = new AdminListener(this);
         Bukkit.getPluginManager().registerEvents(this.listener, this);
+
+        this.getCommand("adminchat").setExecutor(new MainCommand());
     }
 
     @Override
@@ -231,5 +237,19 @@ public final class AdminChat extends JavaPlugin {
         this.globalMute = mute;
     }
     */
+
+    /**
+     * Get an instance of the plugin from a static context.
+     * @since 1.5.0
+     * @version 1.5.0
+     *
+     * @return An instance of the plugin.
+     */
+    @Nullable
+    public static AdminChat getPlugin() {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("Admin-Chat");
+        if (plugin instanceof AdminChat) return (AdminChat) plugin;
+        else return null;
+    }
 }
 

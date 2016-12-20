@@ -24,8 +24,8 @@ permissions:
     default: OP
     description: Get help
 
-commands:
-  adminchat:
-    description: AdminChat's main command
-    aliases: [adminchatmanage, acm, channelmanager, chm]
-    permission: adminchat.*
+#commands:
+#  adminchat:
+#    description: AdminChat's main command
+#    aliases: [adminchatmanage, acm, channelmanager, chm]
+#    permission: adminchat.*
