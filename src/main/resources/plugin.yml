@@ -3,7 +3,7 @@ name: Admin-Chat
 prefix: AdminChat
 description: Allows simple communication between admins
 version: ${version-name}
-authors: [MD678685, 1Rogue, h3lix]
+authors: [MD678685, 1Rogue, h3lix, miicro]
 softdepend: [Vault]
 website: http://dev.bukkit.org/bukkit-plugins/adminchat
 permissions:
